@@ -19,9 +19,11 @@
 package org.luwrain.app.news;
 
 import java.util.*;
+
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
-import org.luwrain.pim.*;
+import org.luwrain.util.*;
+import org.luwrain.extensions.pim.*;
 
 class SummaryArea implements Area, CopyCutRequest
 {
@@ -139,7 +141,7 @@ class SummaryArea implements Area, CopyCutRequest
 	    actions.close();
 	    return true;
 	case EnvironmentEvent.INTRODUCE:
-	    Speech.say(stringConstructor.appName() + " " + stringConstructor.summaryAreaName());
+	    luwrain.say(stringConstructor.appName() + " " + stringConstructor.summaryAreaName());
 	    return true;
 	case EnvironmentEvent.COPY_CUT_POINT:
 	    return copyCutInfo.doCopyCutPoint(hotPointX, hotPointY);
@@ -160,7 +162,7 @@ class SummaryArea implements Area, CopyCutRequest
     {
 	if (articles == null || articles.length < 1)
 	{
-	    Speech.say(stringConstructor.noSummaryItems(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItems());
 	    return true;
 	}
 	if (hotPointY >= articles.length)
@@ -190,7 +192,7 @@ class SummaryArea implements Area, CopyCutRequest
     {
 	if (articles == null || articles.length < 1)
 	{
-	    Speech.say(stringConstructor.noSummaryItems(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItems());
 	    return true;
 	}
 	if (hotPointY >= articles.length)
@@ -217,23 +219,23 @@ class SummaryArea implements Area, CopyCutRequest
     {
 	if (articles == null || articles.length < 1)
 	{
-	    Speech.say(stringConstructor.noSummaryItems(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItems());
 	    return true;
 	}
 	if (hotPointY >= articles.length)
 	{
-	    Speech.say(stringConstructor.noSummaryItemsBelow(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItemsBelow());
 	    return true;
 	}
 	hotPointY++;
 	if (hotPointY >= articles.length)
 	{
 	    hotPointX = 0;
-	    Speech.say(Langs.staticValue(Langs.EMPTY_LINE), Speech.PITCH_HIGH);
+	    luwrain.say(Langs.staticValue(Langs.EMPTY_LINE));
 	    luwrain.onAreaNewHotPoint(this);
 	    return true;
 	}
-	Speech.say(constructStringForSpeech(articles[hotPointY]));
+	luwrain.say(constructStringForSpeech(articles[hotPointY]));
 	hotPointX = INITIAL_HOT_POINT_X;
 	luwrain.onAreaNewHotPoint(this);
 	return true;
@@ -243,17 +245,17 @@ class SummaryArea implements Area, CopyCutRequest
     {
 	if (articles == null || articles.length < 1)
 	{
-	    Speech.say(stringConstructor.noSummaryItems(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItems());
 	    return true;
 	}
 	if (hotPointY == 0)
 	{
-	    Speech.say(stringConstructor.noSummaryItemsAbove(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItemsAbove());
 	    return true;
 	}
 	hotPointY--;
 	hotPointX = INITIAL_HOT_POINT_X;
-	Speech.say(constructStringForSpeech(articles[hotPointY]));
+	luwrain.say(constructStringForSpeech(articles[hotPointY]));
 	luwrain.onAreaNewHotPoint(this);
 	return true;
     }
@@ -262,23 +264,23 @@ class SummaryArea implements Area, CopyCutRequest
     {
 	if (articles == null || articles.length < 1)
 	{
-	    Speech.say(stringConstructor.noSummaryItems(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItems());
 	    return true;
 	}
 	if (hotPointY >= articles.length)
 	{
-	    Speech.say(stringConstructor.noSummaryItemsBelow(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItemsBelow());
 	    return true;
 	}
 	hotPointY++;
 	if (hotPointY >= articles.length)
 	{
 	    hotPointX = 0;
-	    Speech.say(Langs.staticValue(Langs.EMPTY_LINE), Speech.PITCH_HIGH);
+	    luwrain.say(Langs.staticValue(Langs.EMPTY_LINE));
 	    luwrain.onAreaNewHotPoint(this);
 	    return true;
 	}
-	Speech.say(constructString(articles[hotPointY]));
+	luwrain.say(constructString(articles[hotPointY]));
 	hotPointX = INITIAL_HOT_POINT_X;
 	luwrain.onAreaNewHotPoint(this);
 	return true;
@@ -288,17 +290,17 @@ class SummaryArea implements Area, CopyCutRequest
     {
 	if (articles == null || articles.length < 1)
 	{
-	    Speech.say(stringConstructor.noSummaryItems(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItems());
 	    return true;
 	}
 	if (hotPointY == 0)
 	{
-	    Speech.say(stringConstructor.noSummaryItemsAbove(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItemsAbove());
 	    return true;
 	}
 	hotPointY--;
 	hotPointX = INITIAL_HOT_POINT_X;
-	Speech.say(constructString(articles[hotPointY]));
+	luwrain.say(constructString(articles[hotPointY]));
 	luwrain.onAreaNewHotPoint(this);
 	return true;
     }
@@ -307,7 +309,7 @@ class SummaryArea implements Area, CopyCutRequest
     {
 	if (articles == null || articles.length < 1)
 	{
-	    Speech.say(stringConstructor.noSummaryItems(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItems());
 	    return true;
 	}
 	if (hotPointY >= articles.length)
@@ -318,8 +320,8 @@ class SummaryArea implements Area, CopyCutRequest
 	if (hotPointX - INITIAL_HOT_POINT_X < line.length())
 	    hotPointX++;
 	if (hotPointX - INITIAL_HOT_POINT_X >= line.length())
-	    Speech.say(Langs.staticValue(Langs.END_OF_LINE), Speech.PITCH_HIGH); else
-	    Speech.sayLetter(line.charAt(hotPointX - INITIAL_HOT_POINT_X));
+	    luwrain.say(Langs.staticValue(Langs.END_OF_LINE)); else
+	    luwrain.sayLetter(line.charAt(hotPointX - INITIAL_HOT_POINT_X));
 	luwrain.onAreaNewHotPoint(this);
 	return true;
     }
@@ -328,19 +330,19 @@ class SummaryArea implements Area, CopyCutRequest
     {
 	if (articles == null || articles.length < 1)
 	{
-	    Speech.say(stringConstructor.noSummaryItems(), Speech.PITCH_HIGH);
+	    luwrain.say(stringConstructor.noSummaryItems());
 	    return true;
 	}
 	if (hotPointY >= articles.length)
 	    return false;
 	if (hotPointX <= INITIAL_HOT_POINT_X)
 	{
-	    Speech.say(Langs.staticValue(Langs.BEGIN_OF_LINE), Speech.PITCH_HIGH);
+	    luwrain.say(Langs.staticValue(Langs.BEGIN_OF_LINE));
 	    return true;
 	}
 	hotPointX--;
 	final String line = constructString(articles[hotPointY]);
-	Speech.sayLetter(line.charAt(hotPointX - INITIAL_HOT_POINT_X));
+	luwrain.sayLetter(line.charAt(hotPointX - INITIAL_HOT_POINT_X));
 	luwrain.onAreaNewHotPoint(this);
 	return true;
     }

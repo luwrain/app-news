@@ -19,7 +19,7 @@ package org.luwrain.app.news;
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
-import org.luwrain.pim.*;
+import org.luwrain.extensions.pim.*;
 
 public class NewsReaderApp implements Application, Actions
 {
@@ -42,7 +42,7 @@ public class NewsReaderApp implements Application, Actions
 	}
 	stringConstructor = (StringConstructor)o;
 	this.luwrain = luwrain;
-	newsStoring = luwrain.getPimManager().getNewsStoring();
+	newsStoring = null;//FIXME:luwrain.getPimManager().getNewsStoring();
 	if (newsStoring == null)
 	{
 	    luwrain.message("No news storing");//FIXME:
@@ -126,7 +126,7 @@ index < 0 ||
 	try {
 	    articles = newsStoring.loadNewsArticlesInGroupWithoutRead(group.getStoredGroup());
 	    if (articles == null || articles.length < 1)
-		articles = newsStoring.loadNewsArticlesInGroup(group.getStoredGroup());
+		articles = newsStoring.loadNewsArticlesOfGroup(group.getStoredGroup());
 	}
 	catch (Exception e)
 	{

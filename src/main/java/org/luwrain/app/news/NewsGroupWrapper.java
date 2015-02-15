@@ -16,7 +16,7 @@
 
 package org.luwrain.app.news;
 
-import org.luwrain.pim.StoredNewsGroup;
+import org.luwrain.extensions.pim.StoredNewsGroup;
 
 class NewsGroupWrapper
 {

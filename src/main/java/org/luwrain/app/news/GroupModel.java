@@ -19,7 +19,7 @@ package org.luwrain.app.news;
 import java.util.*;
 import org.luwrain.core.Log;
 import org.luwrain.controls.*;
-import org.luwrain.pim.*;
+import org.luwrain.extensions.pim.*;
 
 class GroupModel implements ListModel
 {
