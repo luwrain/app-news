@@ -34,7 +34,7 @@ public class NewsReaderApp implements Application, Actions
 
     public boolean onLaunch(Luwrain luwrain)
     {
-	Object o = Langs.requestStringConstructor("news-reader");
+	Object o = luwrain.i18n().getStrings("luwrain.news");
 	if (o == null)
 	{
 	    Log.error("news", "no string constructor for news reader");
