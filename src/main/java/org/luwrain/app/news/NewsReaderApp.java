@@ -32,7 +32,7 @@ public class NewsReaderApp implements Application, Actions
     private NewsStoring newsStoring;
     //    private StoredNewsGroup[] groups;
 
-    public boolean onLaunch(Luwrain luwrain)
+    @Override public boolean onLaunch(Luwrain luwrain)
     {
 	Object o = luwrain.i18n().getStrings("luwrain.news");
 	if (o == null)
@@ -50,6 +50,11 @@ public class NewsReaderApp implements Application, Actions
 	}
 	createAreas();
 	return true;
+    }
+
+    @Override public String getAppName()
+    {
+	return stringConstructor.appName();
     }
 
     private void createAreas()
