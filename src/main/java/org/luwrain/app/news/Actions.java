@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2014 Michael Pozhidaev <msp@altlinux.org>
+   Copyright 2012-2015 Michael Pozhidaev <msp@altlinux.org>
 
    This file is part of the Luwrain.
 
@@ -21,10 +21,12 @@ import org.luwrain.extensions.pim.*;
 interface Actions
 {
     void gotoGroups();
-    void gotoArticles();
+    void gotoSummary();
     void gotoView();
-    void openGroup(int index);
-    void markAsReadInGroup(int index);
-    void showArticle(StoredNewsArticle article);
     void close();
+    void setShowAllGroupsMode(boolean value);
+    void refreshGroups();
+    void openGroup(NewsGroupWrapper group);
+    void markAsReadWholeGroup(NewsGroupWrapper group);
+    void showArticle(StoredNewsArticle article);
 }

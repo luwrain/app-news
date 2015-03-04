@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2014 Michael Pozhidaev <msp@altlinux.org>
+   Copyright 2012-2015 Michael Pozhidaev <msp@altlinux.org>
 
    This file is part of the Luwrain.
 
@@ -16,10 +16,10 @@
 
 package org.luwrain.app.news;
 
-public interface StringConstructor
+public interface Strings
 {
     String appName();
-    String groupAreaName();
+    String groupsAreaName();
     String summaryAreaName();
     String viewAreaName();
     String errorReadingArticles();

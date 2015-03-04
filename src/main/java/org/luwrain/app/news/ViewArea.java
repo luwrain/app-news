@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2014 Michael Pozhidaev <msp@altlinux.org>
+   Copyright 2012-2015 Michael Pozhidaev <msp@altlinux.org>
 
    This file is part of the Luwrain.
 
@@ -24,7 +24,7 @@ import org.luwrain.extensions.pim.*;
 class ViewArea extends NavigateArea
 {
     private Luwrain luwrain;
-    private StringConstructor stringConstructor;
+    private Strings strings;
     private Actions actions;
 
     private StoredNewsArticle article;
@@ -32,12 +32,12 @@ class ViewArea extends NavigateArea
 
     public ViewArea(Luwrain luwrain,
 		    Actions actions,
-		    StringConstructor stringConstructor)
+		    Strings strings)
     {
 	super(new DefaultControlEnvironment(luwrain));
 	this.luwrain = luwrain;
 	this.actions =  actions;
-	this.stringConstructor = stringConstructor;
+	this.strings = strings;
     }
 
     public void show(StoredNewsArticle article)
@@ -88,7 +88,7 @@ class ViewArea extends NavigateArea
 	if (event.isCommand() && !event.isModified() &&
 						    event.getCommand() == KeyboardEvent.BACKSPACE)
 	    {
-		actions.gotoArticles();
+		actions.gotoSummary();
 		return true;
 	    }
 
@@ -103,9 +103,6 @@ class ViewArea extends NavigateArea
 	case EnvironmentEvent.CLOSE:
 	    actions.close();
 	    return true;
-	case EnvironmentEvent.INTRODUCE:
-	    luwrain.say(stringConstructor.appName() + " " + stringConstructor.viewAreaName());
-	    return true;
 	default:
 	    return super.onEnvironmentEvent(event);
 	}
@@ -113,7 +110,7 @@ class ViewArea extends NavigateArea
 
     public String getName()
     {
-	return stringConstructor.viewAreaName(); 
+	return strings.viewAreaName(); 
     }
 
     private void prepareText()

@@ -47,7 +47,7 @@ public class Extension implements org.luwrain.core.Extension
 		@Override public Application[] prepareApp(String[] args)
 		{
 		    Application[] res = new Application[1];
-		    res[0] = new NewsReaderApp();
+		    res[0] = new NewsApp();
 		    return res;
 		}
 	    };
@@ -68,10 +68,16 @@ public class Extension implements org.luwrain.core.Extension
     {
 	i18nExt.addCommandTitle("en", "news", "News");
 	i18nExt.addCommandTitle("ru", "news", "Чтение новостей");
+	i18nExt.addStrings("ru", "luwrain.news", new org.luwrain.app.news.i18n.Ru());
     }
 
     @Override public org.luwrain.mainmenu.Item[] getMainMenuItems(CommandEnvironment env)
     {
 	return new org.luwrain.mainmenu.Item[0];
+    }
+
+    @Override public void close()
+    {
+	//Nothing here;
     }
 }

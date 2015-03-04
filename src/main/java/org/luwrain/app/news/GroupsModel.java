@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2014 Michael Pozhidaev <msp@altlinux.org>
+   Copyright 2012-2015 Michael Pozhidaev <msp@altlinux.org>
 
    This file is part of the Luwrain.
 
@@ -17,54 +17,64 @@
 package org.luwrain.app.news;
 
 import java.util.*;
+
 import org.luwrain.core.Log;
 import org.luwrain.controls.*;
 import org.luwrain.extensions.pim.*;
 
-class GroupModel implements ListModel
+class GroupsModel implements ListModel
 {
     private NewsStoring newsStoring;
     private NewsGroupWrapper[] items;
+    private boolean showAllMode = false;
 
-    public GroupModel(NewsStoring newsStoring)
+    public GroupsModel(NewsStoring newsStoring)
     {
 	this.newsStoring = newsStoring;
+	showAllMode = false;
 	refresh();
     }
 
-    public int getItemCount()
+    public void setShowAllMode(boolean value)
+    {
+	showAllMode = value;
+    }
+
+    @Override public int getItemCount()
     {
 	return items != null?items.length:0;
     }
 
-    public Object getItem(int index)
+    @Override public Object getItem(int index)
     {
-	if (items == null || index >= items.length)
+	if (items == null || 
+	    index < 0 ||
+	    index >= items.length)
 	    return null;
 	return items[index];
     }
 
-    public void refresh()
+    @Override public void refresh()
     {
 	if (newsStoring == null)
 	{
 	    items = null;
 	    return;
 	}
-	ArrayList<NewsGroupWrapper> w = new ArrayList<NewsGroupWrapper>();
+	Vector<NewsGroupWrapper> w = new Vector<NewsGroupWrapper>();
 	try {
-StoredNewsGroup[] groups = newsStoring.loadNewsGroups();
-for(StoredNewsGroup g: groups)
-{
-    //FIXME:It is better to do this through the single query with agregating;
-    final int count = newsStoring.countNewArticleInGroup(g);
-    if (count > 0)
-	w.add(new NewsGroupWrapper(g, count));
-}
+	    StoredNewsGroup[] groups = newsStoring.loadNewsGroups();
+	    Arrays.sort(groups);
+	    int[] counts = newsStoring.countNewArticlesInGroups(groups);
+	    for(int i = 0;i < groups.length;++i)
+	    {
+		final int count = i < counts.length?counts[i]:0;
+    if (showAllMode || count > 0)
+	w.add(new NewsGroupWrapper(groups[i], count));
+	    }
 	}
 	catch(Exception e)
 	{
-	    Log.error("news", "could not construct list of groups:" + e.getMessage());
 	    e.printStackTrace();
 	    items = null;
 	}
