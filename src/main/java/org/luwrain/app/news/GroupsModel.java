@@ -65,12 +65,14 @@ class GroupsModel implements ListModel
 	try {
 	    StoredNewsGroup[] groups = newsStoring.loadNewsGroups();
 	    Arrays.sort(groups);
-	    int[] counts = newsStoring.countNewArticlesInGroups(groups);
+	    int[] newCounts = newsStoring.countNewArticlesInGroups(groups);
+	    int[] markedCounts = newsStoring.countMarkedArticlesInGroups(groups);
 	    for(int i = 0;i < groups.length;++i)
 	    {
-		final int count = i < counts.length?counts[i]:0;
-    if (showAllMode || count > 0)
-	w.add(new NewsGroupWrapper(groups[i], count));
+		final int newCount = i < newCounts.length?newCounts[i]:0;
+		final int markedCount = i < markedCounts.length?markedCounts[i]:0;
+    if (showAllMode || newCount > 0 || markedCount > 0)
+	w.add(new NewsGroupWrapper(groups[i], newCount));
 	    }
 	}
 	catch(Exception e)
@@ -79,5 +81,10 @@ class GroupsModel implements ListModel
 	    items = null;
 	}
 	items = w.toArray(new NewsGroupWrapper[w.size()]);
+    }
+
+    @Override public boolean toggleMark(int index)
+    {
+	return false;
     }
 }

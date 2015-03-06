@@ -16,13 +16,19 @@
 
 package org.luwrain.app.news;
 
+import java.util.*;
+
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
 import org.luwrain.extensions.pim.*;
+import org.luwrain.util.MlTagStrip;
 
 class ViewArea extends NavigateArea
 {
+    private static final int MAX_LINE_LENGTH = 60;
+    private static final int EXTRA_LINES_COUNT = 7;
+
     private Luwrain luwrain;
     private Strings strings;
     private Actions actions;
@@ -38,6 +44,12 @@ class ViewArea extends NavigateArea
 	this.luwrain = luwrain;
 	this.actions =  actions;
 	this.strings = strings;
+	if (luwrain == null)
+	    throw new NullPointerException("luwrain may not be null");
+	if (strings == null)
+	    throw new NullPointerException("strings may not be null");
+	if (actions == null)
+	    throw new NullPointerException("actions may not be null");
     }
 
     public void show(StoredNewsArticle article)
@@ -49,55 +61,45 @@ class ViewArea extends NavigateArea
 	luwrain.onAreaNewHotPoint(this);//Maybe needless;
     }
 
-    public int getLineCount()
+    @Override public int getLineCount()
     {
 	if (article == null)
 	    return 1;
 	if (text == null)
-	    return 4;
-	return text.length + 4;
+	    return EXTRA_LINES_COUNT;
+	return text.length + EXTRA_LINES_COUNT;
     }
 
-    public String getLine(int index)
+    @Override public String getLine(int index)
     {
 	if (article == null)
 	    return "";
 	if (text != null && index < text.length)
 	    return text[index];
-	int num = index - (text != null?text.length:0);
-	switch(num)
-	{
-	case 1:
-	    return article.getUrl();
-	case 2:
-	    return article.getPublishedDate().toString();
-	default:
-	    return "";
-	}
+	return extraLine(index - (text != null?text.length:0));
     }
 
-    public boolean onKeyboardEvent(KeyboardEvent event)
+    @Override public boolean onKeyboardEvent(KeyboardEvent event)
     {
-	if (event.isCommand() && !event.isModified() &&
-						    event.getCommand() == KeyboardEvent.TAB)
+	if (event == null)
+	    throw new NullPointerException("event may not be null");
+	if (event.isCommand() && !event.isModified())
+	    switch (event.getCommand())
 	    {
+	    case KeyboardEvent.TAB:
 		actions.gotoGroups();
 		return true;
-	    }
-
-	if (event.isCommand() && !event.isModified() &&
-						    event.getCommand() == KeyboardEvent.BACKSPACE)
-	    {
+	    case KeyboardEvent.BACKSPACE:
 		actions.gotoSummary();
 		return true;
 	    }
-
-
 	return super.onKeyboardEvent(event);
     }
 
-    public boolean onEnvironmentEvent(EnvironmentEvent event)
+    @Override public boolean onEnvironmentEvent(EnvironmentEvent event)
     {
+	if (event == null)
+	    throw new NullPointerException("event may not be null");
 	switch(event.getCode())
 	{
 	case EnvironmentEvent.CLOSE:
@@ -108,7 +110,7 @@ class ViewArea extends NavigateArea
 	}
     }
 
-    public String getName()
+    @Override public String getName()
     {
 	return strings.viewAreaName(); 
     }
@@ -120,9 +122,59 @@ class ViewArea extends NavigateArea
 	    text = null;
 	    return;
 	}
-	NewsContentParser parser = new NewsContentParser();
-	parser.parse(article.getContent());
-	text = parser.getLines();
+	final String parsed = MlTagStrip.run(article.getContent());
+	Vector<String> lines = new Vector<String>();
+	String line = "";
+	for(int i = 0;i < parsed.length();++i)
+	{
+	    final char c = parsed.charAt(i);
+	    if (c == '\n')
+	    {
+		if (line.trim().isEmpty())
+		    continue;
+		lines.add(line.trim());
+		lines.add("");
+		line = "";
+		continue;
+	    }
+	    if (Character.isSpace(c))
+	    {
+		if (line.trim().length() > MAX_LINE_LENGTH)
+		{
+		    lines.add(line.trim());
+		    line = "";
+		    continue;
+		}
+		if (!line.trim().isEmpty())
+		    line += ' ';
+		continue;
+	    }
+	    line += c;
+	}
+	if (!line.trim().isEmpty())
+	    lines.add(line.trim());
+	text = lines.toArray(new String[lines.size()]);
+    }
+
+    private String extraLine(int index)
+    {
+	DateUtils dateUtils = new DateUtils();
+	switch(index)
+	{
+	case 1:
+	    return "Заголовок: " + article.getTitle();
+	case 2:
+	    return "Ссылка: " + article.getUrl();
+	case 3:
+	    return "Источник: " + article.getSourceTitle();
+
+	case 4:
+	    return "Автор: " + article.getAuthor();
+	case 5:
+	    return "Время публикации: " + dateUtils.passedTime(article.getPublishedDate()) + " назад";
+	default:
+	    return "";
+	}
     }
 
 }

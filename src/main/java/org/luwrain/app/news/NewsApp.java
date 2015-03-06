@@ -16,6 +16,8 @@
 
 package org.luwrain.app.news;
 
+//FIXME:Proper announcement of an empty line on space in summary area;
+
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
@@ -28,7 +30,7 @@ public class NewsApp implements Application, Actions
 
     private NewsStoring newsStoring;
     private GroupsModel groupsModel;
-    private ArticlesModel summaryModel;
+    private SummaryModel summaryModel;
     private SummaryAppearance summaryAppearance;
     private ListArea groupsArea;
     private ListArea summaryArea;
@@ -58,7 +60,7 @@ public class NewsApp implements Application, Actions
     private void createModels()
     {
 	groupsModel = new GroupsModel(newsStoring); 
-	summaryModel = new ArticlesModel(newsStoring);
+	summaryModel = new SummaryModel(newsStoring);
 	summaryAppearance = new SummaryAppearance(luwrain, strings);
     }
 
@@ -86,6 +88,9 @@ public class NewsApp implements Application, Actions
 						     int index,
 						     Object item)
 		{
+		    if (index < 0 || item == null || !(item instanceof StoredNewsArticle))
+			return false;
+		    actions.showArticle((StoredNewsArticle)item);
 		    return true;
 		}
 	    };

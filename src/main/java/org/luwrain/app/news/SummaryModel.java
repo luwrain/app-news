@@ -22,13 +22,13 @@ import org.luwrain.core.Log;
 import org.luwrain.controls.*;
 import org.luwrain.extensions.pim.*;
 
-class ArticlesModel implements ListModel
+class SummaryModel implements ListModel
 {
     private NewsStoring newsStoring;
     private StoredNewsGroup group;
     private StoredNewsArticle[] articles;
 
-    public ArticlesModel(NewsStoring newsStoring)
+    public SummaryModel(NewsStoring newsStoring)
     {
 	this.newsStoring = newsStoring;
 	if (newsStoring == null)
@@ -75,7 +75,8 @@ class ArticlesModel implements ListModel
 	    articles = newsStoring.loadNewsArticlesInGroupWithoutRead(group);
 	    if (articles == null || articles.length < 1)
 		articles = newsStoring.loadNewsArticlesOfGroup(group);
-
+	    if (articles != null)
+		Arrays.sort(articles);
 
 	}
 	catch(Exception e)
@@ -84,5 +85,23 @@ class ArticlesModel implements ListModel
 	    e.printStackTrace();
 	    articles = null;
 	}
+    }
+
+    @Override public boolean toggleMark(int index)
+    {
+	if (articles == null || index >= articles.length)
+	    return false;
+	final StoredNewsArticle article = articles[index];
+	try {
+	    if (article.getState() == NewsArticle.MARKED)
+		article.setState(NewsArticle.READ); else
+		article.setState(NewsArticle.MARKED);
+	}
+	catch (Exception e)
+	{
+	    e.printStackTrace();
+	    return false;
+	}
+	return true;
     }
 }

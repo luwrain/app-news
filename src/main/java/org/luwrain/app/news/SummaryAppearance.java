@@ -43,10 +43,14 @@ class SummaryAppearance implements ListItemAppearance
 	switch(article.getState())
 	{
 	case NewsArticle.READ:
-	    luwrain.say(strings.readPrefix() + " " + article.getTitle());
+	    if ((flags & ListItemAppearance.BRIEF) == 0)
+		luwrain.say(strings.readPrefix() + " " + article.getTitle()); else
+		luwrain.say(article.getTitle());
 	    break;
 	case NewsArticle.MARKED:
-	    luwrain.say(strings.markedPrefix() + " " + article.getTitle());
+	    if ((flags & ListItemAppearance.BRIEF) == 0)
+		luwrain.say(strings.markedPrefix() + " " + article.getTitle()); else
+		luwrain.say(article.getTitle());
 	    break;
 	default:
 	    luwrain.say(article.getTitle());
@@ -60,20 +64,20 @@ class SummaryAppearance implements ListItemAppearance
 	final StoredNewsArticle article = (StoredNewsArticle)item;
 	switch(article.getState())
 	{
-	case NewsArticle.READ:
-	return " [" + article.getTitle() + "]";
+	case NewsArticle.NEW:
+	    return " [" + article.getTitle() + "]";
 	case NewsArticle.MARKED:
-	return "* " + article.getTitle();
+	    return "* " + article.getTitle();
 	default:
-	return "  " + article.getTitle();
+	    return "  " + article.getTitle();
 	}
     }
 
     @Override public int getObservableLeftBound(Object item)
     {
 	if (item == null || !(item instanceof StoredNewsArticle))
-	return 0;
-	    return 2;
+	    return 0;
+	return 2;
     }
 
     @Override public int getObservableRightBound(Object item)

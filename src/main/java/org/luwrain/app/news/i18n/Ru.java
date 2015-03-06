@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2014 Michael Pozhidaev <msp@altlinux.org>
+   Copyright 2012-2015 Michael Pozhidaev <msp@altlinux.org>
 
    This file is part of the Luwrain.
 
@@ -22,7 +22,7 @@ public class Ru implements org.luwrain.app.news.Strings
 {
     @Override public String appName()
     {
-	return "Чтение новостей";
+	return "Новости";
     }
 
     @Override public String groupsAreaName()
