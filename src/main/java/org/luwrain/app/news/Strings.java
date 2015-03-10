@@ -29,4 +29,5 @@ public interface Strings
     String noSummaryItemsAbove();
     String noSummaryItemsBelow();
     String errorUpdatingArticleState();
+    String noMoreUnreadInGroup();
 }

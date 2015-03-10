@@ -42,16 +42,11 @@ public class NewsApp implements Application, Actions
 	if (o == null || !(o instanceof Strings))
 	    return false;
 	strings = (Strings)o;
-	System.out.println("has strings");
 	this.luwrain = luwrain;
 	o =  luwrain.getSharedObject("luwrain.pim.news");
-	if (o == null)
-	    System.out.println("no shared object");
-	System.out.println(o.getClass().getName());
 	if (o == null || !(o instanceof NewsStoring))
 	    return false;
 	newsStoring = (NewsStoring)o;
-	System.out.println("has storing");
 	createModels();
 	createAreas();
 	return true;
@@ -209,7 +204,7 @@ public class NewsApp implements Application, Actions
 			setSelectedByIndex(index + 1, true); else
 		    {
 			selectEmptyLine();
-			luwrain.hint(Hints.NO_ITEMS_BELOW);
+			luwrain.hint(strings.noMoreUnreadInGroup());
 		    }
 		    return true;
 		}
@@ -220,6 +215,17 @@ public class NewsApp implements Application, Actions
 
     @Override public void showArticle(StoredNewsArticle article)
     {
+	if (article == null)
+	    throw new NullPointerException("article may not be null");
+	try {
+	    if (article.getState() == NewsArticle.NEW)
+		article.setState(NewsArticle.READ);
+	    luwrain.onAreaNewContent(summaryArea);
+	}
+	catch (Exception e)
+	{
+	    e.printStackTrace(); 
+	}
 	viewArea.show(article);
 	luwrain.setActiveArea(viewArea);
     }

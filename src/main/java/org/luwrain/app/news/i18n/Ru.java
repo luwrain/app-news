@@ -74,4 +74,9 @@ public class Ru implements org.luwrain.app.news.Strings
     {
 	return "Произошла ошибка сохранения состояния новостной статьи";
     }
+
+    @Override public String noMoreUnreadInGroup()
+    {
+	return "Просмотрены все статьи в группе";
+    }
 }
