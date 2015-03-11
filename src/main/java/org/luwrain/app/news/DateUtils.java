@@ -32,4 +32,55 @@ class DateUtils
 	    res = "" + daysTotal + "д. " + res;
 	return res;
     }
+
+    public static String dateTime(Date moment)
+    {
+	if (moment == null)
+	    throw new NullPointerException("moment may not be null");
+	String res = addZeroes(moment.getHours(), 2) + ":" + addZeroes(moment.getMinutes(), 2);
+	res += ", ";
+	res += moment.getDate() + " " + month(moment.getMonth() + 1) + " " + (moment.getYear() + 1900) + "г.";
+	return res;
+    }
+
+    private static String month(int m)
+    {
+	switch (m)
+	{
+	case 1:
+	    return "января";
+	case 2:
+	    return "февраля";
+	case 3:
+	    return "марта";
+	case 4:
+	    return "апреля";
+	case 5:
+	    return "мая";
+	case 6:
+	    return "июня";
+	case 7:
+	    	    return "июля";
+	case 8:
+	    return "августа";
+	case 9:
+	    return "сентября";
+	case 10:
+	    return "октября";
+	case 11:
+	    return "ноября";
+	case 12:
+	    return "декабря";
+	default:
+	    return "";
+	    	}
+    }
+
+    private static String  addZeroes(int num, int z)
+    {
+	String res = "" + num;
+	while (res.length() < z)
+	    res = "0" + res;
+	return res;
+    }
 }

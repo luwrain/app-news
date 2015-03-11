@@ -171,7 +171,7 @@ class ViewArea extends NavigateArea
 	case 4:
 	    return "Автор: " + article.getAuthor();
 	case 5:
-	    return "Время публикации: " + dateUtils.passedTime(article.getPublishedDate()) + " назад";
+	    return "Время публикации: " + dateUtils.passedTime(article.getPublishedDate()) + " назад (" + dateUtils.dateTime(article.getPublishedDate()) + ")";
 	default:
 	    return "";
 	}
