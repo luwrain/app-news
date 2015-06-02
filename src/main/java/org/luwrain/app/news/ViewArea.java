@@ -110,7 +110,7 @@ class ViewArea extends NavigateArea
 	}
     }
 
-    @Override public String getName()
+    @Override public String getAreaName()
     {
 	return strings.viewAreaName(); 
     }
