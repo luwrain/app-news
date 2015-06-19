@@ -86,6 +86,8 @@ class ViewArea extends NavigateArea
 	if (event.isCommand() && !event.isModified())
 	    switch (event.getCommand())
 	    {
+	    case KeyboardEvent.ENTER:
+		return openUrl();
 	    case KeyboardEvent.TAB:
 		actions.gotoGroups();
 		return true;
@@ -113,6 +115,17 @@ class ViewArea extends NavigateArea
     @Override public String getAreaName()
     {
 	return strings.viewAreaName(); 
+    }
+
+    private boolean openUrl ()
+    {
+	if (article == null)
+	    return false;
+	final String url = article.getUrl ();
+	if (url == null || url.trim().isEmpty())
+	    return false;
+	luwrain.launchApp("reader", new String[]{"--URL", url});
+	return true;
     }
 
     private void prepareText()
