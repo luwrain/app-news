@@ -20,7 +20,7 @@ import java.util.*;
 
 import org.luwrain.core.Log;
 import org.luwrain.controls.*;
-import org.luwrain.extensions.pim.*;
+import org.luwrain.pim.news.*;
 
 class SummaryModel implements ListModel
 {

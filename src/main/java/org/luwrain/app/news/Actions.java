@@ -16,7 +16,7 @@
 
 package org.luwrain.app.news;
 
-import org.luwrain.extensions.pim.*;
+import org.luwrain.pim.news.*;
 
 interface Actions
 {

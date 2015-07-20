@@ -21,7 +21,7 @@ import java.util.*;
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
-import org.luwrain.extensions.pim.*;
+import org.luwrain.pim.news.*;
 import org.luwrain.util.MlTagStrip;
 
 class ViewArea extends NavigateArea

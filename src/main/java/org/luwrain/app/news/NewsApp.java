@@ -21,7 +21,7 @@ package org.luwrain.app.news;
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
-import org.luwrain.extensions.pim.*;
+import org.luwrain.pim.news.*;
 
 public class NewsApp implements Application, Actions
 {
