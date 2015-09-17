@@ -21,7 +21,6 @@ import java.util.*;
 import org.luwrain.core.Application;
 import org.luwrain.core.Shortcut;
 import org.luwrain.core.Command;
-import org.luwrain.core.CommandEnvironment;
 import org.luwrain.core.Worker;
 import org.luwrain.core.SharedObject;
 import org.luwrain.core.I18nExtension;

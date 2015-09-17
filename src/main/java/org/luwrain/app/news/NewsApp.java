@@ -44,9 +44,12 @@ public class NewsApp implements Application, Actions
 	strings = (Strings)o;
 	this.luwrain = luwrain;
 	o =  luwrain.getSharedObject("luwrain.pim.news");
-	if (o == null || !(o instanceof NewsStoring))
+	if (o == null || !(o instanceof org.luwrain.pim.news.Factory))
 	    return false;
-	newsStoring = (NewsStoring)o;
+	final org.luwrain.pim.news.Factory factory = (org.luwrain.pim.news.Factory)o;
+	newsStoring = factory.createNewsStoring();
+	if (newsStoring == null)
+	    return false;
 	createModels();
 	createAreas();
 	return true;
