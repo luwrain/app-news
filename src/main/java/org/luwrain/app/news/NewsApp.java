@@ -1,30 +1,16 @@
-/*
-   Copyright 2012-2015 Michael Pozhidaev <msp@altlinux.org>
-
-   This file is part of the Luwrain.
-
-   Luwrain is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   Luwrain is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
+//import java.util.*;
 
 package org.luwrain.app.news;
-
-//FIXME:Proper announcement of an empty line on space in summary area;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
 import org.luwrain.pim.news.*;
 
-public class NewsApp implements Application, Actions
+class NewsApp implements Application, Actions
 {
+    static private final String STRINGS_NAME = "luwrain.news";
+
     private Luwrain luwrain;
     private Strings strings;
 
@@ -38,15 +24,15 @@ public class NewsApp implements Application, Actions
 
     @Override public boolean onLaunch(Luwrain luwrain)
     {
-	Object o = luwrain.i18n().getStrings("luwrain.news");
+	final Object o = luwrain.i18n().getStrings(STRINGS_NAME);
 	if (o == null || !(o instanceof Strings))
 	    return false;
 	strings = (Strings)o;
 	this.luwrain = luwrain;
-	o =  luwrain.getSharedObject("luwrain.pim.news");
-	if (o == null || !(o instanceof org.luwrain.pim.news.Factory))
+	final Object f =  luwrain.getSharedObject("luwrain.pim.news");
+	if (f == null || !(f instanceof org.luwrain.pim.news.Factory))
 	    return false;
-	final org.luwrain.pim.news.Factory factory = (org.luwrain.pim.news.Factory)o;
+	final org.luwrain.pim.news.Factory factory = (org.luwrain.pim.news.Factory)f;
 	newsStoring = factory.createNewsStoring();
 	if (newsStoring == null)
 	    return false;
@@ -109,10 +95,6 @@ public class NewsApp implements Application, Actions
 			    actions.gotoSummary();
 			    return true;
 			case KeyboardEvent.DELETE:
-			    /*
-			    if (selectedIndex() >= 0)
-				actions.markAsReadWholeGroup(selectedIndex());
-			    */
 			    if (selected() != null && (selected() instanceof NewsGroupWrapper))
 				actions.markAsReadWholeGroup((NewsGroupWrapper)selected()); else
 				return false;
@@ -139,7 +121,7 @@ public class NewsApp implements Application, Actions
 		    switch(event.getCode())
 		    {
 		    case EnvironmentEvent.CLOSE:
-			actions.close();
+			actions.closeApp();
 			return true;
 		    default:
 			return super.onEnvironmentEvent(event);
@@ -179,7 +161,7 @@ public class NewsApp implements Application, Actions
 		    switch(event.getCode())
 		    {
 		    case EnvironmentEvent.CLOSE:
-			actions.close();
+			actions.closeApp();
 			return true;
 		    default:
 			return super.onEnvironmentEvent(event);
@@ -218,8 +200,7 @@ public class NewsApp implements Application, Actions
 
     @Override public void showArticle(StoredNewsArticle article)
     {
-	if (article == null)
-	    throw new NullPointerException("article may not be null");
+	NullCheck.notNull(article, "article");
 	try {
 	    if (article.getState() == NewsArticle.NEW)
 		article.setState(NewsArticle.READ);
@@ -290,7 +271,7 @@ public class NewsApp implements Application, Actions
 	return new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, groupsArea, summaryArea, viewArea);
     }
 
-    @Override public void close()
+    @Override public void closeApp()
     {
 	luwrain.closeApp();
     }

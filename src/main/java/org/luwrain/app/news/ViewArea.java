@@ -1,18 +1,4 @@
-/*
-   Copyright 2012-2015 Michael Pozhidaev <msp@altlinux.org>
-
-   This file is part of the Luwrain.
-
-   Luwrain is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   Luwrain is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
+//import java.util.*;
 
 package org.luwrain.app.news;
 
@@ -105,7 +91,7 @@ class ViewArea extends NavigateArea
 	switch(event.getCode())
 	{
 	case EnvironmentEvent.CLOSE:
-	    actions.close();
+	    actions.closeApp();
 	    return true;
 	default:
 	    return super.onEnvironmentEvent(event);
@@ -135,39 +121,8 @@ class ViewArea extends NavigateArea
 	    text = null;
 	    return;
 	}
-	final String parsed = MlTagStrip.run(article.getContent());
-	Vector<String> lines = new Vector<String>();
-	String line = "";
-	for(int i = 0;i < parsed.length();++i)
-	{
-	    final char c = parsed.charAt(i);
-	    if (c == '\n')
-	    {
-		if (line.trim().isEmpty())
-		    continue;
-		lines.add(line.trim());
-		lines.add("");
-		line = "";
-		continue;
-	    }
-	    if (Character.isSpace(c))
-	    {
-		if (line.trim().length() > MAX_LINE_LENGTH)
-		{
-		    lines.add(line.trim());
-		    line = "";
-		    continue;
-		}
-		if (!line.trim().isEmpty())
-		    line += ' ';
-		continue;
-	    }
-	    line += c;
+	    text = MlTagStrip.run(article.getContent()).split("\n");
 	}
-	if (!line.trim().isEmpty())
-	    lines.add(line.trim());
-	text = lines.toArray(new String[lines.size()]);
-    }
 
     private String extraLine(int index)
     {
