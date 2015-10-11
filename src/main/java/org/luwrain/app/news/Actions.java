@@ -29,4 +29,5 @@ interface Actions
     void openGroup(NewsGroupWrapper group);
     void markAsReadWholeGroup(NewsGroupWrapper group);
     void showArticle(StoredNewsArticle article);
+    void launchNewsFetch();
 }

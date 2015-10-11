@@ -41,6 +41,11 @@ class NewsApp implements Application, Actions
 	return true;
     }
 
+    @Override public void launchNewsFetch()
+    {
+	luwrain.launchApp("fetch", new String[]{"--NEWS"});
+    }
+
     private void createModels()
     {
 	groupsModel = new GroupsModel(newsStoring); 
@@ -50,11 +55,11 @@ class NewsApp implements Application, Actions
 
     private void createAreas()
     {
-	final Actions a = this;
+	final Actions actions = this;
 	final Strings s = strings;
 
 	final ListClickHandler groupsHandler = new ListClickHandler(){
-		private Actions actions = a;
+		//		private Actions actions = a;
 		@Override public boolean onListClick(ListArea area,
 						     int index,
 						     Object item)
@@ -67,7 +72,7 @@ class NewsApp implements Application, Actions
 	    };
 
 	final ListClickHandler summaryHandler = new ListClickHandler(){
-		private Actions actions = a;
+		//		private Actions actions = a;
 		@Override public boolean onListClick(ListArea area,
 						     int index,
 						     Object item)
@@ -84,8 +89,8 @@ class NewsApp implements Application, Actions
 					new DefaultListItemAppearance(new DefaultControlEnvironment(luwrain)),
 					groupsHandler,
 					strings.groupsAreaName()) {
-		      private Strings strings = s;
-		      private Actions actions = a;
+		      //		      private Strings strings = s;
+		      //		      private Actions actions = a;
 		      @Override public boolean onKeyboardEvent(KeyboardEvent event)
 		      {
 			  if (event.isCommand() && !event.isModified())
@@ -94,6 +99,9 @@ class NewsApp implements Application, Actions
 			      case KeyboardEvent.TAB:
 			    actions.gotoSummary();
 			    return true;
+			      case KeyboardEvent.F9:
+				  actions.launchNewsFetch();
+				  return true;
 			case KeyboardEvent.DELETE:
 			    if (selected() != null && (selected() instanceof NewsGroupWrapper))
 				actions.markAsReadWholeGroup((NewsGroupWrapper)selected()); else
@@ -134,8 +142,7 @@ class NewsApp implements Application, Actions
 				   new SummaryAppearance(luwrain, strings),
 				   summaryHandler,
 				   strings.summaryAreaName()) {
-		private Strings strings = s;
-		private Actions actions = a;
+		//		private Strings strings = s;
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
 		{
 		    if (event.isCommand() && !event.isModified())
@@ -146,6 +153,9 @@ class NewsApp implements Application, Actions
 			    return true;
 			case KeyboardEvent.BACKSPACE:
 			    actions.gotoGroups();
+			    return true;
+			case KeyboardEvent.F9:
+			    actions.launchNewsFetch();
 			    return true;
 			}
 		    if (!event.isCommand() && !event.isModified())
