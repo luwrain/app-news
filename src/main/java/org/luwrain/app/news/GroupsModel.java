@@ -8,7 +8,7 @@ import org.luwrain.core.Log;
 import org.luwrain.controls.*;
 import org.luwrain.pim.news.*;
 
-class GroupsModel implements ListModel
+class GroupsModel implements ListArea.Model
 {
     private NewsStoring newsStoring;
     private NewsGroupWrapper[] items;
