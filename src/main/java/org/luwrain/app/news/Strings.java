@@ -2,6 +2,8 @@
 
 package org.luwrain.app.news;
 
+import java.util.*;
+
 public interface Strings
 {
     String appName();
@@ -16,4 +18,5 @@ public interface Strings
     String noSummaryItemsBelow();
     String errorUpdatingArticleState();
     String noMoreUnreadInGroup();
+    String passedTimeBrief(Date date);
 }

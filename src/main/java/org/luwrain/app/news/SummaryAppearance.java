@@ -33,13 +33,13 @@ class SummaryAppearance implements ListItemAppearance
 	switch(article.getState())
 	{
 	case NewsArticle.READ:
-	    luwrain.say(strings.readPrefix() + " " + article.getTitle());
+	    luwrain.say(strings.readPrefix() + " " + article.getTitle() + " " + strings.passedTimeBrief(article.getPublishedDate()));
 	    break;
 	case NewsArticle.MARKED:
-	    luwrain.say(strings.markedPrefix() + " " + article.getTitle());
+	    luwrain.say(strings.markedPrefix() + " " + article.getTitle() + " " + strings.passedTimeBrief(article.getPublishedDate()));
 	    break;
 	default:
-	    luwrain.say(article.getTitle());
+	    luwrain.say(article.getTitle() + " " + strings.passedTimeBrief(article.getPublishedDate()));
 	}
     }
 
