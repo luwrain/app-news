@@ -128,7 +128,7 @@ class NewsApp implements Application, Actions
 		{
 		    switch(event.getCode())
 		    {
-		    case EnvironmentEvent.CLOSE:
+		    case CLOSE:
 			actions.closeApp();
 			return true;
 		    default:
@@ -170,7 +170,7 @@ class NewsApp implements Application, Actions
 		{
 		    switch(event.getCode())
 		    {
-		    case EnvironmentEvent.CLOSE:
+		    case CLOSE:
 			actions.closeApp();
 			return true;
 		    default:
