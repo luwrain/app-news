@@ -93,16 +93,16 @@ class NewsApp implements Application, Actions
 		      //		      private Actions actions = a;
 		      @Override public boolean onKeyboardEvent(KeyboardEvent event)
 		      {
-			  if (event.isCommand() && !event.isModified())
-			      switch(event.getCommand())
+			  if (event.isSpecial() && !event.isModified())
+			      switch(event.getSpecial())
 			      {
-			      case KeyboardEvent.TAB:
+			      case TAB:
 			    actions.gotoSummary();
 			    return true;
-			      case KeyboardEvent.F9:
+			      case F9:
 				  actions.launchNewsFetch();
 				  return true;
-			case KeyboardEvent.DELETE:
+			case DELETE:
 			    if (selected() != null && (selected() instanceof NewsGroupWrapper))
 				actions.markAsReadWholeGroup((NewsGroupWrapper)selected()); else
 				return false;
@@ -110,8 +110,8 @@ class NewsApp implements Application, Actions
 			      default:
 				  return super.onKeyboardEvent(event);
 			      }
-			  if (!event.isCommand() && !event.isModified())
-			      switch(event.getCharacter())
+			  if (!event.isSpecial() && !event.isModified())
+			      switch(event.getChar())
 			      {
 			      case '=':
 				  actions.setShowAllGroupsMode(true);
@@ -145,21 +145,21 @@ class NewsApp implements Application, Actions
 		//		private Strings strings = s;
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
 		{
-		    if (event.isCommand() && !event.isModified())
-			switch(event.getCommand())
+		    if (event.isSpecial() && !event.isModified())
+			switch(event.getSpecial())
 			{
-			case KeyboardEvent.TAB:
+			case TAB:
 			    actions.gotoView();
 			    return true;
-			case KeyboardEvent.BACKSPACE:
+			case BACKSPACE:
 			    actions.gotoGroups();
 			    return true;
-			case KeyboardEvent.F9:
+			case F9:
 			    actions.launchNewsFetch();
 			    return true;
 			}
-		    if (!event.isCommand() && !event.isModified())
-			switch (event.getCharacter())
+		    if (!event.isSpecial() && !event.isModified())
+			switch (event.getChar())
 			{
 			case ' ':
 			    return onSpace();

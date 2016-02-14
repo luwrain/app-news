@@ -68,18 +68,18 @@ class ViewArea extends NavigateArea
     @Override public boolean onKeyboardEvent(KeyboardEvent event)
     {
 	NullCheck.notNull(event, "event");
-	if (event.isCommand() && !event.isModified())
-	    switch (event.getCommand())
+	if (event.isSpecial() && !event.isModified())
+	    switch (event.getSpecial())
 	    {
-	    case KeyboardEvent.ENTER:
+	    case ENTER:
 		return openUrl();
-	    case KeyboardEvent.F9:
+	    case F9:
 		actions.launchNewsFetch();
 		return true;
-	    case KeyboardEvent.TAB:
+	    case TAB:
 		actions.gotoGroups();
 		return true;
-	    case KeyboardEvent.BACKSPACE:
+	    case BACKSPACE:
 		actions.gotoSummary();
 		return true;
 	    }
