@@ -24,10 +24,10 @@ interface Actions
     void gotoSummary();
     void gotoView();
     void closeApp();
-    void setShowAllGroupsMode(boolean value);
+    boolean setShowAllGroupsMode(boolean value);
     void refreshGroups();
     void openGroup(NewsGroupWrapper group);
-    void markAsReadWholeGroup(NewsGroupWrapper group);
+    boolean markAsReadWholeGroup(NewsGroupWrapper group);
     void showArticle(StoredNewsArticle article);
-    void launchNewsFetch();
+    boolean launchNewsFetch();
 }

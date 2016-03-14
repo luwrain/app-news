@@ -1,4 +1,3 @@
-//import java.util.*;
 
 package org.luwrain.app.news;
 
@@ -41,9 +40,10 @@ class NewsApp implements Application, Actions
 	return true;
     }
 
-    @Override public void launchNewsFetch()
+    @Override public boolean launchNewsFetch()
     {
 	luwrain.launchApp("fetch", new String[]{"--NEWS"});
+	return true;
     }
 
     private void createModels()
@@ -89,23 +89,14 @@ class NewsApp implements Application, Actions
 					new DefaultListItemAppearance(new DefaultControlEnvironment(luwrain)),
 					groupsHandler,
 					strings.groupsAreaName()) {
-		      //		      private Strings strings = s;
-		      //		      private Actions actions = a;
 		      @Override public boolean onKeyboardEvent(KeyboardEvent event)
 		      {
+			  NullCheck.notNull(event, "event");
 			  if (event.isSpecial() && !event.isModified())
 			      switch(event.getSpecial())
 			      {
 			      case TAB:
 			    actions.gotoSummary();
-			    return true;
-			      case F9:
-				  actions.launchNewsFetch();
-				  return true;
-			case DELETE:
-			    if (selected() != null && (selected() instanceof NewsGroupWrapper))
-				actions.markAsReadWholeGroup((NewsGroupWrapper)selected()); else
-				return false;
 			    return true;
 			      default:
 				  return super.onKeyboardEvent(event);
@@ -126,8 +117,20 @@ class NewsApp implements Application, Actions
 		}
 		@Override public boolean onEnvironmentEvent(EnvironmentEvent event)
 		{
+		    NullCheck.notNull(event, "event");
 		    switch(event.getCode())
 		    {
+		    case ACTION:
+			if (ActionEvent.isAction(event, "fetch"))
+				  return actions.launchNewsFetch();
+			if (ActionEvent.isAction(event, "mark-all-as-read"))
+return actions.markAsReadWholeGroup((NewsGroupWrapper)selected());
+			if (ActionEvent.isAction(event, "show-with-read-only"))
+				  return actions.setShowAllGroupsMode(true);
+			if (ActionEvent.isAction(event, "hide-with-read-only"))
+				  return actions.setShowAllGroupsMode(false);
+			return false;
+			//kaka
 		    case CLOSE:
 			actions.closeApp();
 			return true;
@@ -135,6 +138,15 @@ class NewsApp implements Application, Actions
 			return super.onEnvironmentEvent(event);
 		    }
 		}
+		      @Override public Action[] getAreaActions()
+		      {
+			  return new Action[]{
+			      new Action("fetch", "Доставка новостей", new KeyboardEvent(KeyboardEvent.Special.F9)),
+			      new Action("mark-all-as-read", "Пометить все статьи как прочитанные", new KeyboardEvent(KeyboardEvent.Special.DELETE)),
+			      new Action("show-with-read-only", "Показать группы только с прочитанными новостями", new KeyboardEvent('=')),
+			      new Action("hide-with-read-only", "Спрятать группы только с прочитанными новостями", new KeyboardEvent('-')),
+			  };
+		      }
 	    };
 
 	summaryArea = new ListArea(new DefaultControlEnvironment(luwrain),
@@ -224,10 +236,11 @@ class NewsApp implements Application, Actions
 	luwrain.setActiveArea(viewArea);
     }
 
-    @Override public void setShowAllGroupsMode(boolean value)
+    @Override public boolean setShowAllGroupsMode(boolean value)
     {
 	groupsModel.setShowAllMode(value);
 	groupsArea.refresh();
+	return true;
     }
 
     @Override public void refreshGroups()
@@ -249,15 +262,14 @@ class NewsApp implements Application, Actions
 	gotoSummary();
     }
 
-    @Override public void markAsReadWholeGroup(NewsGroupWrapper group)
+    @Override public boolean markAsReadWholeGroup(NewsGroupWrapper group)
     {
-	if (group == null)
-	    throw new NullPointerException("group may not be null");
+	NullCheck.notNull(group, "group");
 	StoredNewsArticle articles[];
 	try {
 	    articles = newsStoring.loadNewsArticlesInGroupWithoutRead(group.getStoredGroup());
 	    if (articles == null || articles.length < 1)
-		return;
+		return true;
 	    for(StoredNewsArticle a: articles)
 		if (a.getState() == NewsArticle.NEW)
 		    a.setState(NewsArticle.READ);
@@ -268,12 +280,13 @@ class NewsApp implements Application, Actions
 	    luwrain.message(strings.errorReadingArticles(), Luwrain.MESSAGE_ERROR);
 	    summaryModel.setGroup(null);
 	    summaryArea.refresh();
-	    return;
+	    return true;
 	}
 	groupsArea.refresh();
 	groupsArea.introduceSelected();
 	summaryModel.setGroup(null);
 	summaryArea.refresh();
+	return true;
     }
 
     @Override public AreaLayout getAreasToShow()
