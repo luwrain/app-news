@@ -19,4 +19,5 @@ public interface Strings
     String errorUpdatingArticleState();
     String noMoreUnreadInGroup();
     String passedTimeBrief(Date date);
+    String groupsActionTitles(String actionName);
 }

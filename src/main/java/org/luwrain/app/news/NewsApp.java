@@ -141,10 +141,10 @@ return actions.markAsReadWholeGroup((NewsGroupWrapper)selected());
 		      @Override public Action[] getAreaActions()
 		      {
 			  return new Action[]{
-			      new Action("fetch", "Доставка новостей", new KeyboardEvent(KeyboardEvent.Special.F9)),
-			      new Action("mark-all-as-read", "Пометить все статьи как прочитанные", new KeyboardEvent(KeyboardEvent.Special.DELETE)),
-			      new Action("show-with-read-only", "Показать группы только с прочитанными новостями", new KeyboardEvent('=')),
-			      new Action("hide-with-read-only", "Спрятать группы только с прочитанными новостями", new KeyboardEvent('-')),
+			      new Action("fetch", strings.groupsActionTitles("fetch"), new KeyboardEvent(KeyboardEvent.Special.F9)),
+			      new Action("mark-all-as-read", strings.groupsActionTitles("mark-all-as-read"), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
+			      new Action("show-with-read-only", strings.groupsActionTitles("show-with-read-only"), new KeyboardEvent('=')),
+			      new Action("hide-with-read-only", strings.groupsActionTitles("hide-with-read-only"), new KeyboardEvent('-')),
 			  };
 		      }
 	    };
