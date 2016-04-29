@@ -211,7 +211,7 @@ return actions.markAsReadWholeGroup((NewsGroupWrapper)selected());
 			setSelectedByIndex(index + 1, true); else
 		    {
 			selectEmptyLine();
-			luwrain.hint(strings.noMoreUnreadInGroup());
+			luwrain.message(strings.noMoreUnreadInGroup(), Luwrain.MESSAGE_NOT_READY);
 		    }
 		    return true;
 		}
