@@ -6,7 +6,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
 import org.luwrain.pim.news.*;
 
-class NewsApp implements Application, Actions
+class NewsApp implements Application, MonoApp, Actions
 {
     static private final String STRINGS_NAME = "luwrain.news";
 
@@ -38,6 +38,12 @@ class NewsApp implements Application, Actions
 	createModels();
 	createAreas();
 	return true;
+    }
+
+    @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
+    {
+	NullCheck.notNull(app, "app");
+	return MonoApp.Result.BRING_FOREGROUND;
     }
 
     @Override public boolean launchNewsFetch()
