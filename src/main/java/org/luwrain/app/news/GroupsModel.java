@@ -6,6 +6,7 @@ import java.util.*;
 
 import org.luwrain.core.Log;
 import org.luwrain.controls.*;
+import org.luwrain.pim.*;
 import org.luwrain.pim.news.*;
 
 class GroupsModel implements ListArea.Model
@@ -49,7 +50,7 @@ class GroupsModel implements ListArea.Model
 	}
 	Vector<NewsGroupWrapper> w = new Vector<NewsGroupWrapper>();
 	try {
-	    StoredNewsGroup[] groups = newsStoring.loadNewsGroups();
+	    StoredNewsGroup[] groups = newsStoring.loadGroups();
 	    Arrays.sort(groups);
 	    int[] newCounts = newsStoring.countNewArticlesInGroups(groups);
 	    int[] markedCounts = newsStoring.countMarkedArticlesInGroups(groups);
@@ -61,7 +62,7 @@ class GroupsModel implements ListArea.Model
 	w.add(new NewsGroupWrapper(groups[i], newCount));
 	    }
 	}
-	catch(Exception e)
+	catch(PimException e)
 	{
 	    e.printStackTrace();
 	    items = null;
