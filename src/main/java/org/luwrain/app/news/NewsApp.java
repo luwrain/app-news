@@ -214,7 +214,7 @@ return actions.markAsReadWholeGroup((NewsGroupWrapper)selected());
 		    actions.refreshGroups();
 		    final int index = selectedIndex();
 		    if (index + 1 < model().getItemCount())
-			setSelectedByIndex(index + 1, true); else
+			select(index + 1, true); else
 		    {
 			selectEmptyLine();
 			luwrain.message(strings.noMoreUnreadInGroup(), Luwrain.MESSAGE_NOT_READY);

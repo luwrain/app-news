@@ -2,11 +2,13 @@
 
 package org.luwrain.app.news;
 
+import java.util.*;
+
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
 import org.luwrain.pim.news.*;
 
-class SummaryAppearance implements ListItemAppearance
+class SummaryAppearance implements ListArea.Appearance
 {
     private Luwrain luwrain;
     private Strings strings;
@@ -19,13 +21,13 @@ class SummaryAppearance implements ListItemAppearance
 	NullCheck.notNull(strings, "strings");
     }
 
-    @Override public void introduceItem(Object item, int flags)
+    @Override public void announceItem(Object item, Set<Flags> flags)
     {
-	if (item == null || !(item instanceof StoredNewsArticle))
-	    return;
+	NullCheck.notNull(item, "item");
+	NullCheck.notNull(flags, "flags");
 	final StoredNewsArticle article = (StoredNewsArticle)item;
 	luwrain.playSound(Sounds.NEW_LIST_ITEM);
-	if ((flags & ListItemAppearance.BRIEF) != 0)
+	if (flags.contains(Flags.BRIEF))
 	{
 	    luwrain.say(article.getTitle());
 	    return;
@@ -43,10 +45,10 @@ class SummaryAppearance implements ListItemAppearance
 	}
     }
 
-    @Override public String getScreenAppearance(Object item, int flags)
+    @Override public String getScreenAppearance(Object item, Set<Flags> flags)
     {
-	if (item == null || !(item instanceof StoredNewsArticle))
-	    return "  ";
+	NullCheck.notNull(item, "item");
+	NullCheck.notNull(flags, "flags");
 	final StoredNewsArticle article = (StoredNewsArticle)item;
 	switch(article.getState())
 	{
