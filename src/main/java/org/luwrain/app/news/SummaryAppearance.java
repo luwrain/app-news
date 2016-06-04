@@ -1,4 +1,18 @@
-//import java.util.*;
+/*
+   Copyright 2012-2016 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+
+   This file is part of the LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 package org.luwrain.app.news;
 
@@ -35,13 +49,13 @@ class SummaryAppearance implements ListArea.Appearance
 	switch(article.getState())
 	{
 	case NewsArticle.READ:
-	    luwrain.say(strings.readPrefix() + " " + article.getTitle() + " " + strings.passedTimeBrief(article.getPublishedDate()));
+	    luwrain.say(strings.readPrefix() + " " + article.getTitle() + " " + luwrain.i18n().pastTimeBrief(article.getPublishedDate()));
 	    break;
 	case NewsArticle.MARKED:
-	    luwrain.say(strings.markedPrefix() + " " + article.getTitle() + " " + strings.passedTimeBrief(article.getPublishedDate()));
+	    luwrain.say(strings.markedPrefix() + " " + article.getTitle() + " " + luwrain.i18n().pastTimeBrief(article.getPublishedDate()));
 	    break;
 	default:
-	    luwrain.say(article.getTitle() + " " + strings.passedTimeBrief(article.getPublishedDate()));
+	    luwrain.say(article.getTitle() + " " + luwrain.i18n().pastTimeBrief(article.getPublishedDate()));
 	}
     }
 

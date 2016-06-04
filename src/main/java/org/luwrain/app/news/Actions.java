@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2015 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2016 Michael Pozhidaev <michael.pozhidaev@gmail.com>
 
    This file is part of the LUWRAIN.
 
@@ -24,10 +24,4 @@ interface Actions
     void gotoSummary();
     void gotoView();
     void closeApp();
-    boolean setShowAllGroupsMode(boolean value);
-    void refreshGroups();
-    void openGroup(NewsGroupWrapper group);
-    boolean markAsReadWholeGroup(NewsGroupWrapper group);
-    void showArticle(StoredNewsArticle article);
-    boolean launchNewsFetch();
 }
