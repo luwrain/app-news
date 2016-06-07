@@ -98,13 +98,6 @@ setShowAllGroupsMode(false);
 			return super.onEnvironmentEvent(event);
 		    }
 		}
-
-    @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
-    {
-	NullCheck.notNull(app, "app");
-	return MonoApp.Result.BRING_FOREGROUND;
-    }
-
 		      @Override public Action[] getAreaActions()
 		      {
 			  return getGroupsAreaActions();
@@ -194,8 +187,21 @@ setShowAllGroupsMode(false);
 
     private Action[] getSummaryAreaActions()
     {
-			  return new Action[]{
+	if (summaryArea.selectedIndex() < 0)
+	    return new Action[]{
+			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
 			  };
+
+	    return new Action[]{
+			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
+			      new Action("read-article", strings.actionReadArticle()),
+			      new Action("mark-article", strings.actionMarkArticle()),
+			      new Action("unmark-article", strings.actionUnmarkArticle()),
+
+			  };
+
+
+
     }
 
     private boolean onSummaryAreaAction(EnvironmentEvent event)
@@ -210,22 +216,14 @@ private boolean launchNewsFetch()
 	return true;
     }
 
-private boolean showArticle(Object obj)
+    private boolean showArticle(Object obj)
     {
 	NullCheck.notNull(obj, "obj");
 	if (!(obj instanceof StoredNewsArticle))
 	    return false;
 	final StoredNewsArticle article = (StoredNewsArticle)obj;
-	try {
-	    if (article.getState() == NewsArticle.NEW)
-		article.setState(NewsArticle.READ);
-	    luwrain.onAreaNewContent(summaryArea);
-	}
-	catch (PimException e)
-	{
-	    luwrain.crash(e);
-	    return true;
-	}
+	base.markAsRead(article);
+	luwrain.onAreaNewContent(summaryArea);
 	viewArea.show(article);
 	luwrain.setActiveArea(viewArea);
 	return true;
@@ -236,11 +234,6 @@ private boolean setShowAllGroupsMode(boolean value)
 	base.getGroupsModel().setShowAllMode(value);
 	groupsArea.refresh();
 	return true;
-    }
-
-private void refreshGroups()
-    {
-	groupsArea.refresh();
     }
 
     private boolean openGroup(Object obj)
@@ -275,21 +268,26 @@ private void refreshGroups()
 
     private boolean onSummarySpace()
     {
-	final Object obj = groupsArea.selected();
+	final Object obj = summaryArea.selected();
 	if (obj == null || !(obj instanceof StoredNewsArticle))
 	    return false;
 	if (!base.markAsRead((StoredNewsArticle)obj))
 	    return false;
-	luwrain.onAreaNewContent(groupsArea);
-	refreshGroups();
-	final int index = groupsArea.selectedIndex();
-	if (index + 1 >= base.getGroupsModel().getItemCount())
+	luwrain.onAreaNewContent(summaryArea);
+	final int index = summaryArea.selectedIndex();
+	if (index + 1 >= base.getSummaryModel().getItemCount())
 	{
-	    groupsArea.selectEmptyLine();
+	    summaryArea.selectEmptyLine();
 	    luwrain.message(strings.noMoreUnreadInGroup(), Luwrain.MESSAGE_NOT_READY);
 	} else
-	    groupsArea.select(index + 1, true);
+	    summaryArea.select(index + 1, true);
 	return true;
+    }
+
+    @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
+    {
+	NullCheck.notNull(app, "app");
+	return MonoApp.Result.BRING_FOREGROUND;
     }
 
     @Override public AreaLayout getAreasToShow()

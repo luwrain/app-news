@@ -36,4 +36,7 @@ public interface Strings
     String actionMarkAllAsRead();
     String actionShowWithReadOnly();
     String actionHideWithReadOnly();
+    String actionReadArticle();
+    String actionMarkArticle();
+    String actionUnmarkArticle();
 }
