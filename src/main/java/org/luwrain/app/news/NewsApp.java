@@ -58,6 +58,7 @@ class NewsApp implements Application, MonoApp, Actions
 	groupsParams.appearance = new DefaultListItemAppearance(groupsParams.environment);
 	groupsParams.clickHandler = (area, index, obj)->openGroup(obj);
 	groupsParams.name = strings.groupsAreaName();
+	groupsParams.flags = ListArea.Params.loadRegularFlags(luwrain.getRegistry());
 
 	groupsArea = new ListArea(groupsParams) {
 		      @Override public boolean onKeyboardEvent(KeyboardEvent event)
@@ -110,6 +111,7 @@ setShowAllGroupsMode(false);
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
 	summaryParams.clickHandler = (area, index, obj)->showArticle(obj);
 	summaryParams.name = strings.summaryAreaName();
+	summaryParams.flags = ListArea.Params.loadRegularFlags(luwrain.getRegistry());
 
 	summaryArea = new ListArea(summaryParams) {
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)

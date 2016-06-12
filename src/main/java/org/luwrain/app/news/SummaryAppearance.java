@@ -40,7 +40,7 @@ class SummaryAppearance implements ListArea.Appearance
 	NullCheck.notNull(item, "item");
 	NullCheck.notNull(flags, "flags");
 	final StoredNewsArticle article = (StoredNewsArticle)item;
-	luwrain.playSound(Sounds.NEW_LIST_ITEM);
+	luwrain.playSound(Sounds.LIST_ITEM);
 	if (flags.contains(Flags.BRIEF))
 	{
 	    luwrain.say(article.getTitle());
