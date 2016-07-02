@@ -24,7 +24,7 @@ import org.luwrain.controls.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.util.MlTagStrip;
 
-class ViewArea extends NavigateArea
+class ViewArea extends NavigationArea
 {
     private static final int MAX_LINE_LENGTH = 60;
     private static final int EXTRA_LINES_COUNT = 7;
