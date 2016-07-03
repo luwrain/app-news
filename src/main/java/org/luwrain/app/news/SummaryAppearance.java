@@ -49,13 +49,13 @@ class SummaryAppearance implements ListArea.Appearance
 	switch(article.getState())
 	{
 	case NewsArticle.READ:
-	    luwrain.say(strings.readPrefix() + " " + article.getTitle() + " " + luwrain.i18n().pastTimeBrief(article.getPublishedDate()));
+	    luwrain.say(strings.readPrefix() + " " + article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
 	    break;
 	case NewsArticle.MARKED:
-	    luwrain.say(strings.markedPrefix() + " " + article.getTitle() + " " + luwrain.i18n().pastTimeBrief(article.getPublishedDate()));
+	    luwrain.say(strings.markedPrefix() + " " + article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
 	    break;
 	default:
-	    luwrain.say(article.getTitle() + " " + luwrain.i18n().pastTimeBrief(article.getPublishedDate()));
+	    luwrain.say(article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
 	}
     }
 
