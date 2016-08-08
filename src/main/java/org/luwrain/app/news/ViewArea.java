@@ -128,7 +128,7 @@ class ViewArea extends NavigationArea
 	final String url = article.getUrl ();
 	if (url == null || url.trim().isEmpty())
 	    return false;
-	luwrain.launchApp("reader", new String[]{"--URL", url});
+	luwrain.launchApp("reader", new String[]{url});
 	return true;
     }
 
