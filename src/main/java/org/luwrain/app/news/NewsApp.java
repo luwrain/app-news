@@ -16,6 +16,8 @@
 
 package org.luwrain.app.news;
 
+import java.util.*;
+
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
@@ -58,7 +60,7 @@ class NewsApp implements Application, MonoApp, Actions
 	groupsParams.appearance = new DefaultListItemAppearance(groupsParams.environment);
 	groupsParams.clickHandler = (area, index, obj)->openGroup(obj);
 	groupsParams.name = strings.groupsAreaName();
-	groupsParams.flags = ListArea.Params.loadRegularFlags(luwrain.getRegistry());
+	groupsParams.flags = EnumSet.of(ListArea.Flags.EMPTY_LINE_BOTTOM);
 
 	groupsArea = new ListArea(groupsParams) {
 		      @Override public boolean onKeyboardEvent(KeyboardEvent event)
@@ -111,7 +113,7 @@ setShowAllGroupsMode(false);
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
 	summaryParams.clickHandler = (area, index, obj)->showArticle(obj);
 	summaryParams.name = strings.summaryAreaName();
-	summaryParams.flags = ListArea.Params.loadRegularFlags(luwrain.getRegistry());
+	summaryParams.flags = EnumSet.of(ListArea.Flags.EMPTY_LINE_BOTTOM);
 
 	summaryArea = new ListArea(summaryParams) {
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
