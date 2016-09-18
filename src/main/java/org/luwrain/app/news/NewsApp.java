@@ -90,6 +90,16 @@ setShowAllGroupsMode(false);
 		@Override public boolean onEnvironmentEvent(EnvironmentEvent event)
 		{
 		    NullCheck.notNull(event, "event");
+		    if (event.getType() == EnvironmentEvent.Type.BROADCAST)
+			switch(event.getCode())
+			{
+			case REFRESH:
+			    if (event.getBroadcastFilterUniRef().startsWith("newsgroup:"))
+			    refresh();
+			    return true;
+			default:
+			    super.onEnvironmentEvent(event);
+			}
 		    switch(event.getCode())
 		    {
 		    case ACTION:
