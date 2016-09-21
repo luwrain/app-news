@@ -87,7 +87,7 @@ class Base
 	NullCheck.notNull(group, "group");
 	try {
 	    StoredNewsArticle articles[];
-	    articles = storing.loadNewsArticlesInGroupWithoutRead(group);
+	    articles = storing.loadArticlesInGroupWithoutRead(group);
 	    if (articles == null || articles.length < 1)
 		return true;
 	    for(StoredNewsArticle a: articles)

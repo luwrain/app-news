@@ -69,9 +69,9 @@ class SummaryModel implements ListArea.Model
 	    return;
 	}
 	try {
-	    articles = newsStoring.loadNewsArticlesInGroupWithoutRead(group);
+	    articles = newsStoring.loadArticlesInGroupWithoutRead(group);
 	    if (articles == null || articles.length < 1)
-		articles = newsStoring.loadNewsArticlesOfGroup(group);
+		articles = newsStoring.loadArticlesInGroup(group);
 	    if (articles != null)
 		Arrays.sort(articles);
 	}

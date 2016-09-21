@@ -78,6 +78,10 @@ gotoSummary();
 			  if (!event.isSpecial() && !event.isModified())
 			      switch(event.getChar())
 			      {
+			      case ' ':
+				  if (selected() != null)
+				      return openGroup(selected());
+				  return false;
 			      case '=':
 setShowAllGroupsMode(true);
 				  return true;
@@ -151,6 +155,9 @@ setShowAllGroupsMode(false);
 		}
 		@Override public boolean onEnvironmentEvent(EnvironmentEvent event)
 		{
+		    NullCheck.notNull(event, "event");
+		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
+			return super.onEnvironmentEvent(event);
 		    switch(event.getCode())
 		    {
 		    case ACTION:
@@ -288,12 +295,10 @@ private boolean setShowAllGroupsMode(boolean value)
 	if (!base.markAsRead((StoredNewsArticle)obj))
 	    return false;
 	luwrain.onAreaNewContent(summaryArea);
+	groupsArea.refresh();
 	final int index = summaryArea.selectedIndex();
 	if (index + 1 >= base.getSummaryModel().getItemCount())
-	{
-	    summaryArea.selectEmptyLine();
-	    luwrain.message(strings.noMoreUnreadInGroup(), Luwrain.MESSAGE_NOT_READY);
-	} else
+	    luwrain.setActiveArea(groupsArea); else
 	    summaryArea.select(index + 1, true);
 	return true;
     }
