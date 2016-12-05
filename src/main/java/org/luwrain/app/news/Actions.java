@@ -1,8 +1,12 @@
 
 package org.luwrain.app.news;
 
+import java.net.*;
+
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
+import org.luwrain.doctree.control.*;
+import org.luwrain.doctree.loading.*;
 import org.luwrain.pim.news.*;
 
 class Actions
@@ -35,15 +39,15 @@ class Actions
 	return true;
     }
 
-boolean launchNewsFetch()
+    boolean launchNewsFetch()
     {
 	luwrain.launchApp("fetch", new String[]{"--NEWS"});
 	return true;
     }
 
     boolean onSummaryClick(Base base, 
-			ListArea summaryArea, ViewArea viewArea,
-Object obj)
+			   ListArea summaryArea, DoctreeArea viewArea,
+			   Object obj)
     {
 	NullCheck.notNull(base, "base");
 	NullCheck.notNull(summaryArea, "summaryArea");
@@ -54,8 +58,19 @@ Object obj)
 	final StoredNewsArticle article = (StoredNewsArticle)obj;
 	base.markAsRead(article);
 	luwrain.onAreaNewContent(summaryArea);
-	viewArea.show(article);
-	luwrain.setActiveArea(viewArea);
+	try {
+	final StringLoader.Result res = new StringLoader(article.getContent(), "text/html", new URL(article.getUrl())).load();
+	if (res.type() == StringLoader.Result.Type.OK)
+	    viewArea.setDocument(res.doc, luwrain.getAreaVisibleWidth(viewArea));
+	}
+	catch(MalformedURLException e)
+	{
+	    //FIXME:
+	    luwrain.message("url", Luwrain.MESSAGE_ERROR);
+	    e.printStackTrace();
+	    return true;
+	}
+luwrain.setActiveArea(viewArea);
 	return true;
     }
 
@@ -68,7 +83,7 @@ Object obj)
 	return true;
     }
 
-    boolean openGroup(Base base, ListArea summaryArea, Object obj)
+    boolean onGroupsClick(Base base, ListArea summaryArea, Object obj)
     {
 	NullCheck.notNull(base, "base");
 	NullCheck.notNull(summaryArea, "summaryArea");
@@ -88,7 +103,7 @@ Object obj)
     }
 
     boolean markAsReadWholeGroup(Base base, ListArea groupsArea,
-ListArea summaryArea, NewsGroupWrapper group)
+				 ListArea summaryArea, NewsGroupWrapper group)
     {
 	NullCheck.notNull(base, "base");
 	NullCheck.notNull(groupsArea, "groupsArea");
@@ -103,8 +118,4 @@ ListArea summaryArea, NewsGroupWrapper group)
 	summaryArea.refresh();
 	return true;
     }
-
-
-
-
 }

@@ -6,6 +6,7 @@ import java.util.*;
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
+import org.luwrain.doctree.control.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.pim.*;
 
@@ -20,7 +21,7 @@ class NewsApp implements Application, MonoApp
     private Actions actions = null;
     private ListArea groupsArea;
     private ListArea summaryArea;
-    private ViewArea viewArea;
+    private DoctreeArea viewArea;
 
     @Override public boolean onLaunch(Luwrain luwrain)
     {
@@ -45,7 +46,7 @@ class NewsApp implements Application, MonoApp
 	groupsParams.model = base.getGroupsModel();
 	groupsParams.appearance = new DefaultListItemAppearance(groupsParams.environment);
 	groupsParams.clickHandler = (area, index, obj)->{
-	    if (!actions.openGroup(base, summaryArea, obj))
+	    if (!actions.onGroupsClick(base, summaryArea, obj))
 		return false;
 	    gotoSummary();
 	    return true;
@@ -159,7 +160,7 @@ gotoSummary();
 		}
 	};
 
-	viewArea = new ViewArea(luwrain, strings){
+	viewArea = new DoctreeArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.doctree.control.Strings)luwrain.i18n().getStrings(org.luwrain.doctree.control.Strings.NAME))){
 
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
 		{
