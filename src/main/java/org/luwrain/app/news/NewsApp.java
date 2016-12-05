@@ -44,7 +44,12 @@ class NewsApp implements Application, MonoApp
 	groupsParams.environment = new DefaultControlEnvironment(luwrain);
 	groupsParams.model = base.getGroupsModel();
 	groupsParams.appearance = new DefaultListItemAppearance(groupsParams.environment);
-	groupsParams.clickHandler = (area, index, obj)->openGroup(obj);
+	groupsParams.clickHandler = (area, index, obj)->{
+	    if (!actions.openGroup(base, summaryArea, obj))
+		return false;
+	    gotoSummary();
+	    return true;
+	};
 	groupsParams.name = strings.groupsAreaName();
 	groupsParams.flags = EnumSet.of(ListArea.Flags.EMPTY_LINE_BOTTOM);
 
@@ -64,16 +69,10 @@ gotoSummary();
 			  if (!event.isSpecial() && !event.isModified())
 			      switch(event.getChar())
 			      {
-			      case ' ':
-				  if (selected() != null)
-				      return openGroup(selected());
-				  return false;
 			      case '=':
-setShowAllGroupsMode(true);
-				  return true;
+				  return actions.setShowAllGroupsMode(base, groupsArea, true);
 			      case '-':
-setShowAllGroupsMode(false);
-				  return true;
+				  return actions.setShowAllGroupsMode(base, groupsArea, false);
 			      }
 		    return super.onKeyboardEvent(event);
 		}
@@ -111,7 +110,7 @@ setShowAllGroupsMode(false);
 	summaryParams.environment = new DefaultControlEnvironment(luwrain);
 	summaryParams.model = base.getSummaryModel();
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
-	summaryParams.clickHandler = (area, index, obj)->showArticle(obj);
+	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(base, summaryArea, viewArea, obj);
 	summaryParams.name = strings.summaryAreaName();
 	summaryParams.flags = EnumSet.of(ListArea.Flags.EMPTY_LINE_BOTTOM);
 
@@ -128,14 +127,13 @@ setShowAllGroupsMode(false);
 			    gotoGroups();
 			    return true;
 			case F9:
-			    launchNewsFetch();
-			    return true;
+			    return actions.launchNewsFetch();
 			}
 		    if (!event.isSpecial() && !event.isModified())
 			switch (event.getChar())
 			{
 			case ' ':
-			    return onSummarySpace();
+			    return actions.onSummarySpace(base, groupsArea, summaryArea);
 			}
 		    return super.onKeyboardEvent(event);
 		}
@@ -218,13 +216,13 @@ setShowAllGroupsMode(false);
     {
 	NullCheck.notNull(event, "event");
 			if (ActionEvent.isAction(event, "fetch"))
-				  return launchNewsFetch();
+				  return actions.launchNewsFetch();
 			if (ActionEvent.isAction(event, "mark-all-as-read"))
-			    return markAsReadWholeGroup((NewsGroupWrapper)groupsArea.selected());
+			    return actions.markAsReadWholeGroup(base, groupsArea, summaryArea, (NewsGroupWrapper)groupsArea.selected());
 			if (ActionEvent.isAction(event, "show-with-read-only"))
-				  return setShowAllGroupsMode(true);
+			    return actions.setShowAllGroupsMode(base, groupsArea, true);
 			if (ActionEvent.isAction(event, "hide-with-read-only"))
-				  return setShowAllGroupsMode(false);
+			    return actions.setShowAllGroupsMode(base, groupsArea, false);
 			return false;
  }
 
@@ -253,88 +251,6 @@ setShowAllGroupsMode(false);
 	return false;
  }
 
-private boolean launchNewsFetch()
-    {
-	luwrain.launchApp("fetch", new String[]{"--NEWS"});
-	return true;
-    }
-
-    private boolean showArticle(Object obj)
-    {
-	NullCheck.notNull(obj, "obj");
-	if (!(obj instanceof StoredNewsArticle))
-	    return false;
-	final StoredNewsArticle article = (StoredNewsArticle)obj;
-	base.markAsRead(article);
-	luwrain.onAreaNewContent(summaryArea);
-	viewArea.show(article);
-	luwrain.setActiveArea(viewArea);
-	return true;
-    }
-
-private boolean setShowAllGroupsMode(boolean value)
-    {
-	base.getGroupsModel().setShowAllMode(value);
-	groupsArea.refresh();
-	return true;
-    }
-
-    private boolean openGroup(Object obj)
-    {
-	NullCheck.notNull(obj, "obj");
-	if (!(obj instanceof NewsGroupWrapper))
-	    return false;
-	final NewsGroupWrapper group = (NewsGroupWrapper)obj;
-	if (group.getStoredGroup() != base.getSummaryModel().getGroup())
-	{
-	    base.getSummaryModel().setGroup(group.getStoredGroup());
-	    summaryArea.refresh(); 
-	    summaryArea.resetHotPoint();
-	    //FIXME:reset view;
-	}
-	gotoSummary();
-	return true;
-    }
-
-    private boolean markAsReadWholeGroup(NewsGroupWrapper group)
-    {
-	NullCheck.notNull(group, "group");
-	if (base.markAsReadWholeGroup(group.getStoredGroup()))
-	{
-	    groupsArea.refresh();
-	    groupsArea.announceSelected();
-	}
-	base.getSummaryModel().setGroup(null);
-	summaryArea.refresh();
-	return true;
-    }
-
-    private boolean onSummarySpace()
-    {
-	final Object obj = summaryArea.selected();
-	if (obj == null || !(obj instanceof StoredNewsArticle))
-	    return false;
-	if (!base.markAsRead((StoredNewsArticle)obj))
-	    return false;
-	luwrain.onAreaNewContent(summaryArea);
-	groupsArea.refresh();
-	final int index = summaryArea.selectedIndex();
-	if (index + 1 >= base.getSummaryModel().getItemCount())
-	    luwrain.setActiveArea(groupsArea); else
-	    summaryArea.select(index + 1, true);
-	return true;
-    }
-
-    @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
-    {
-	NullCheck.notNull(app, "app");
-	return MonoApp.Result.BRING_FOREGROUND;
-    }
-
-    @Override public AreaLayout getAreasToShow()
-    {
-	return new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, groupsArea, summaryArea, viewArea);
-    }
 
     private void closeApp()
     {
@@ -359,5 +275,16 @@ private boolean setShowAllGroupsMode(boolean value)
     @Override public String getAppName()
     {
 	return strings.appName();
+    }
+
+    @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
+    {
+	NullCheck.notNull(app, "app");
+	return MonoApp.Result.BRING_FOREGROUND;
+    }
+
+    @Override public AreaLayout getAreasToShow()
+    {
+	return new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, groupsArea, summaryArea, viewArea);
     }
 }
