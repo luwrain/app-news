@@ -1,18 +1,3 @@
-/*
-   Copyright 2012-2016 Michael Pozhidaev <michael.pozhidaev@gmail.com>
-
-   This file is part of the LUWRAIN.
-
-   LUWRAIN is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public
-   License as published by the Free Software Foundation; either
-   version 3 of the License, or (at your option) any later version.
-
-   LUWRAIN is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   General Public License for more details.
-*/
 
 package org.luwrain.app.news;
 
@@ -31,25 +16,16 @@ class ViewArea extends NavigationArea
 
     private Luwrain luwrain;
     private Strings strings;
-    private Actions actions;
 
     private StoredNewsArticle article;
     private String[] text;
 
-    public ViewArea(Luwrain luwrain,
-		    Actions actions,
-		    Strings strings)
+    public ViewArea(Luwrain luwrain, Strings strings)
     {
 	super(new DefaultControlEnvironment(luwrain));
 	this.luwrain = luwrain;
-	this.actions =  actions;
+	//	this.actions =  actions;
 	this.strings = strings;
-	if (luwrain == null)
-	    throw new NullPointerException("luwrain may not be null");
-	if (strings == null)
-	    throw new NullPointerException("strings may not be null");
-	if (actions == null)
-	    throw new NullPointerException("actions may not be null");
     }
 
     public void show(StoredNewsArticle article)
@@ -87,33 +63,8 @@ class ViewArea extends NavigationArea
 	    {
 	    case ENTER:
 		return openUrl();
-		/*
-	    case F9:
-		actions.launchNewsFetch();
-		return true;
-		*/
-	    case TAB:
-		actions.gotoGroups();
-		return true;
-	    case BACKSPACE:
-		actions.gotoSummary();
-		return true;
 	    }
 	return super.onKeyboardEvent(event);
-    }
-
-    @Override public boolean onEnvironmentEvent(EnvironmentEvent event)
-    {
-	if (event == null)
-	    throw new NullPointerException("event may not be null");
-	switch(event.getCode())
-	{
-	case CLOSE:
-	    actions.closeApp();
-	    return true;
-	default:
-	    return super.onEnvironmentEvent(event);
-	}
     }
 
     @Override public String getAreaName()
