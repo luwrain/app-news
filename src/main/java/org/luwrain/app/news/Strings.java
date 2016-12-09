@@ -17,6 +17,8 @@ public interface Strings
     String noSummaryItemsBelow();
     String errorUpdatingArticleState();
     String noMoreUnreadInGroup();
+    String articleUrl(String url);
+    String articleTitle(String title);
     String actionFetch();
     String actionMarkAllAsRead();
     String actionShowWithReadOnly();

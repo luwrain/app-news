@@ -6,7 +6,7 @@ import java.util.*;
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
-import org.luwrain.doctree.control.*;
+import org.luwrain.controls.doctree.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.pim.*;
 
@@ -33,7 +33,7 @@ class NewsApp implements Application, MonoApp
 	this.luwrain = luwrain;
 	if (!base.init(luwrain, strings))
 	    return false;
-	actions = new Actions(luwrain);
+	actions = new Actions(luwrain, strings);
 	createAreas();
 	return true;
     }
@@ -160,7 +160,7 @@ gotoSummary();
 		}
 	};
 
-	viewArea = new DoctreeArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.doctree.control.Strings)luwrain.i18n().getStrings(org.luwrain.doctree.control.Strings.NAME))){
+	viewArea = new DoctreeArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.doctree.Strings)luwrain.i18n().getStrings(org.luwrain.controls.doctree.Strings.NAME))){
 
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
 		{
@@ -168,6 +168,8 @@ gotoSummary();
 		    if (event.isSpecial() && !event.isModified())
 			switch(event.getSpecial())
 			{
+			case ENTER:
+			    return actions.onOpenUrl(this);
 			case TAB:
 			    gotoGroups();
 			    return true;
@@ -185,6 +187,8 @@ gotoSummary();
 			return super.onEnvironmentEvent(event);
 		    switch(event.getCode())
 		    {
+		    case OK:
+			return actions.onOpenUrl(this);
 		    case CLOSE:
 			closeApp();
 			return true;
@@ -193,10 +197,11 @@ gotoSummary();
 		    }
 		}
 
-
+		@Override public String getAreaName()
+		{
+		    return strings.viewAreaName();
+		}
 	    };
-
-
     }
 
     private Action[] getGroupsAreaActions()

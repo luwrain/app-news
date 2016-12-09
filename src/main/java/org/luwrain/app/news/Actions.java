@@ -5,18 +5,22 @@ import java.net.*;
 
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
-import org.luwrain.doctree.control.*;
+import org.luwrain.doctree.*;
+import org.luwrain.controls.doctree.*;
 import org.luwrain.doctree.loading.*;
 import org.luwrain.pim.news.*;
 
 class Actions
 {
     private final Luwrain luwrain;
+    private final Strings strings;
 
-    Actions(Luwrain luwrain)
+    Actions(Luwrain luwrain, Strings strings)
     {
 	NullCheck.notNull(luwrain, "luwrain");
+	NullCheck.notNull(strings, "strings");
 	this.luwrain = luwrain;
+	this.strings = strings;
     }
 
     boolean onSummarySpace(Base base,
@@ -61,7 +65,14 @@ class Actions
 	try {
 	final StringLoader.Result res = new StringLoader(article.getContent(), "text/html", new URL(article.getUrl())).load();
 	if (res.type() == StringLoader.Result.Type.OK)
+	{
+	    final Node root = res.doc.getRoot();
+	    root.addSubnode(NodeFactory.newEmptyLine());
+	    root.addSubnode(NodeFactory.newPara(strings.articleUrl(article.getUrl())));
+	    root.addSubnode(NodeFactory.newPara(strings.articleTitle(article.getTitle())));
+	    res.doc.commit();
 	    viewArea.setDocument(res.doc, luwrain.getAreaVisibleWidth(viewArea));
+	}
 	}
 	catch(MalformedURLException e)
 	{
@@ -116,6 +127,16 @@ luwrain.setActiveArea(viewArea);
 	}
 	base.getSummaryModel().setGroup(null);
 	summaryArea.refresh();
+	return true;
+    }
+
+    boolean onOpenUrl(DoctreeArea area)
+    {
+	NullCheck.notNull(area, "area");
+	final Document doc = area.getDocument();
+	if (doc == null || doc.getUrl() == null)
+	    return false;
+	luwrain.launchApp("reader", new String[]{doc.getUrl().toString()});
 	return true;
     }
 }
