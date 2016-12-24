@@ -44,7 +44,7 @@ class NewsApp implements Application, MonoApp
 	final ListArea.Params groupsParams = new ListArea.Params();
 	groupsParams.environment = new DefaultControlEnvironment(luwrain);
 	groupsParams.model = base.getGroupsModel();
-	groupsParams.appearance = new DefaultListItemAppearance(groupsParams.environment);
+	groupsParams.appearance = new ListUtils.DefaultAppearance(groupsParams.environment);
 	groupsParams.clickHandler = (area, index, obj)->{
 	    if (!actions.onGroupsClick(base, summaryArea, obj))
 		return false;
