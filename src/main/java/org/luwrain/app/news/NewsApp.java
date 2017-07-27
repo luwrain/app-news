@@ -23,28 +23,28 @@ class NewsApp implements Application, MonoApp
     private ListArea summaryArea;
     private DoctreeArea viewArea;
 
-    @Override public boolean onLaunch(Luwrain luwrain)
+    @Override public InitResult onLaunchApp(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	final Object o = luwrain.i18n().getStrings(STRINGS_NAME);
 	if (o == null || !(o instanceof Strings))
-	    return false;
+	    return new InitResult(InitResult.Type.NO_STRINGS_OBJ, STRINGS_NAME);
 	strings = (Strings)o;
 	this.luwrain = luwrain;
 	if (!base.init(luwrain, strings))
-	    return false;
+	    return new InitResult(InitResult.Type.FAILURE);
 	actions = new Actions(luwrain, strings);
 	createAreas();
-	return true;
+	return new InitResult();
     }
 
     private void createAreas()
     {
 
 	final ListArea.Params groupsParams = new ListArea.Params();
-	groupsParams.environment = new DefaultControlEnvironment(luwrain);
+	groupsParams.context = new DefaultControlEnvironment(luwrain);
 	groupsParams.model = base.getGroupsModel();
-	groupsParams.appearance = new ListUtils.DefaultAppearance(groupsParams.environment, Suggestions.CLICKABLE_LIST_ITEM);
+	groupsParams.appearance = new ListUtils.DefaultAppearance(groupsParams.context, Suggestions.CLICKABLE_LIST_ITEM);
 	groupsParams.clickHandler = (area, index, obj)->{
 	    if (!actions.onGroupsClick(base, summaryArea, obj))
 		return false;
@@ -108,7 +108,7 @@ gotoSummary();
 	    };
 
 	final ListArea.Params summaryParams = new ListArea.Params();
-	summaryParams.environment = new DefaultControlEnvironment(luwrain);
+	summaryParams.context = new DefaultControlEnvironment(luwrain);
 	summaryParams.model = base.getSummaryModel();
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
 	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(base, summaryArea, viewArea, obj);
@@ -258,7 +258,7 @@ gotoSummary();
  }
 
 
-    private void closeApp()
+    @Override public void closeApp()
     {
 	luwrain.closeApp();
     }
@@ -289,7 +289,7 @@ gotoSummary();
 	return MonoApp.Result.BRING_FOREGROUND;
     }
 
-    @Override public AreaLayout getAreasToShow()
+    @Override public AreaLayout getAreaLayout()
     {
 	return new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, groupsArea, summaryArea, viewArea);
     }

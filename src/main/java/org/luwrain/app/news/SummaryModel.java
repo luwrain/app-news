@@ -67,6 +67,7 @@ class SummaryModel implements ListArea.Model
 	}
     }
 
+    /*
     @Override public boolean toggleMark(int index)
     {
 	if (articles == null || index >= articles.length)
@@ -84,4 +85,5 @@ class SummaryModel implements ListArea.Model
 	}
 	return true;
     }
+    */
 }

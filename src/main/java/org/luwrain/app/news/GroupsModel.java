@@ -68,9 +68,4 @@ class GroupsModel implements ListArea.Model
 	}
 	items = w.toArray(new NewsGroupWrapper[w.size()]);
     }
-
-    @Override public boolean toggleMark(int index)
-    {
-	return false;
-    }
 }
