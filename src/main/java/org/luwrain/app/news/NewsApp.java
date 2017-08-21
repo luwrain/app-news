@@ -1,3 +1,18 @@
+/*
+   Copyright 2012-2017 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 package org.luwrain.app.news;
 
@@ -14,11 +29,12 @@ class NewsApp implements Application, MonoApp
 {
     static private final String STRINGS_NAME = "luwrain.news";
 
-    private Luwrain luwrain;
-    private Strings strings;
-
+    private Luwrain luwrain = null;
+    private Strings strings = null;
     private final Base base = new Base();
     private Actions actions = null;
+    private ActionLists actionLists = null;
+
     private ListArea groupsArea;
     private ListArea summaryArea;
     private DoctreeArea viewArea;
@@ -33,7 +49,8 @@ class NewsApp implements Application, MonoApp
 	this.luwrain = luwrain;
 	if (!base.init(luwrain, strings))
 	    return new InitResult(InitResult.Type.FAILURE);
-	actions = new Actions(luwrain, strings);
+	this.actions = new Actions(luwrain, strings);
+	this.actionLists = new ActionLists(strings);
 	createAreas();
 	return new InitResult();
     }
@@ -48,7 +65,7 @@ class NewsApp implements Application, MonoApp
 	groupsParams.clickHandler = (area, index, obj)->{
 	    if (!actions.onGroupsClick(base, summaryArea, obj))
 		return false;
-	    gotoSummary();
+	    luwrain.setActiveArea(summaryArea);
 	    return true;
 	};
 	groupsParams.name = strings.groupsAreaName();
@@ -62,7 +79,7 @@ class NewsApp implements Application, MonoApp
 			      switch(event.getSpecial())
 			      {
 			      case TAB:
-gotoSummary();
+				  luwrain.setActiveArea(summaryArea);
 			    return true;
 			      default:
 				  return super.onKeyboardEvent(event);
@@ -103,7 +120,7 @@ gotoSummary();
 		}
 		      @Override public Action[] getAreaActions()
 		      {
-			  return getGroupsAreaActions();
+			  return actionLists.getGroupsActions(this);
 		      }
 	    };
 
@@ -122,10 +139,10 @@ gotoSummary();
 			switch(event.getSpecial())
 			{
 			case TAB:
-			    gotoView();
+			    luwrain.setActiveArea(viewArea);
 			    return true;
 			case BACKSPACE:
-			    gotoGroups();
+			    luwrain.setActiveArea(groupsArea);
 			    return true;
 			case F9:
 			    return actions.launchNewsFetch();
@@ -156,12 +173,11 @@ gotoSummary();
 		}
 		@Override public Action[] getAreaActions()
 		{
-		    return getSummaryAreaActions();
+		    return actionLists.getSummaryActions(this);
 		}
 	};
 
 	viewArea = new DoctreeArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.doctree.Strings)luwrain.i18n().getStrings(org.luwrain.controls.doctree.Strings.NAME))){
-
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
@@ -171,15 +187,14 @@ gotoSummary();
 			case ENTER:
 			    return actions.onOpenUrl(this);
 			case TAB:
-			    gotoGroups();
+			    luwrain.setActiveArea(groupsArea);
 			    return true;
 			case BACKSPACE:
-			    gotoSummary();
+			    luwrain.setActiveArea(summaryArea);
 			    return true;
 			}
 		    return super.onKeyboardEvent(event);
 		}
-
 		@Override public boolean onEnvironmentEvent(EnvironmentEvent event)
 		{
 		    NullCheck.notNull(event, "event");
@@ -196,26 +211,11 @@ gotoSummary();
 			return super.onEnvironmentEvent(event);
 		    }
 		}
-
 		@Override public String getAreaName()
 		{
 		    return strings.viewAreaName();
 		}
 	    };
-    }
-
-    private Action[] getGroupsAreaActions()
-    {
-	if (groupsArea.selectedIndex() < 0)
-			  return new Action[]{
-			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
-			  };
-			  return new Action[]{
-			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
-			      new Action("mark-all-as-read", strings.actionMarkAllAsRead(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
-			      new Action("show-with-read-only", strings.actionShowWithReadOnly(), new KeyboardEvent('=')),
-			      new Action("hide-with-read-only", strings.actionHideWithReadOnly(), new KeyboardEvent('-')),
-			  };
     }
 
     private boolean onGroupsAreaAction(EnvironmentEvent event)
@@ -232,50 +232,15 @@ gotoSummary();
 			return false;
  }
 
-    private Action[] getSummaryAreaActions()
-    {
-	if (summaryArea.selectedIndex() < 0)
-	    return new Action[]{
-			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
-			  };
-
-	    return new Action[]{
-			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
-			      new Action("read-article", strings.actionReadArticle()),
-			      new Action("mark-article", strings.actionMarkArticle()),
-			      new Action("unmark-article", strings.actionUnmarkArticle()),
-
-			  };
-
-
-
-    }
-
     private boolean onSummaryAreaAction(EnvironmentEvent event)
     {
 	NullCheck.notNull(event, "event");
 	return false;
  }
 
-
     @Override public void closeApp()
     {
 	luwrain.closeApp();
-    }
-
-    private void gotoGroups()
-    {
-	luwrain.setActiveArea(groupsArea);
-    }
-
-    private void gotoSummary()
-    {
-	luwrain.setActiveArea(summaryArea);
-    }
-
-    private void gotoView()
-    {
-	luwrain.setActiveArea(viewArea);
     }
 
     @Override public String getAppName()
