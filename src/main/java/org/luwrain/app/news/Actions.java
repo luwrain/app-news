@@ -104,7 +104,7 @@ luwrain.setActiveArea(viewArea);
     {
 	NullCheck.notNull(base, "base");
 	NullCheck.notNull(groupsArea, "groupsArea");
-	base.getGroupsModel().setShowAllMode(value);
+	base.setShowAllGroups(value);
 	groupsArea.refresh();
 	return true;
     }

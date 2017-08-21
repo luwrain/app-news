@@ -16,7 +16,10 @@
 
 package org.luwrain.app.news;
 
+import java.util.*;
+
 import org.luwrain.core.*;
+import org.luwrain.controls.*;
 import org.luwrain.pim.*;
 import org.luwrain.pim.news.*;
 
@@ -28,6 +31,9 @@ class Base
     private GroupsModel groupsModel;
     private SummaryModel summaryModel;
     private SummaryAppearance summaryAppearance;
+
+    private NewsGroupWrapper[] groups = new NewsGroupWrapper[0];
+    private boolean showAllGroups = false;
 
     boolean init(Luwrain luwrain, Strings strings)
     {
@@ -41,7 +47,7 @@ class Base
 	storing = ((org.luwrain.pim.news.Factory)f).createNewsStoring();
 	if (storing == null)
 	    return false;
-	groupsModel = new GroupsModel(storing); 
+	loadGroups();
 	summaryModel = new SummaryModel(storing);
 	summaryAppearance = new SummaryAppearance(luwrain, strings);
 	return true;
@@ -52,10 +58,11 @@ class Base
 	return storing;
     }
 
-    GroupsModel getGroupsModel()
+    void setShowAllGroups(boolean value)
     {
-	return groupsModel;
+	this.showAllGroups = value;
     }
+
 
     SummaryModel getSummaryModel()
     {
@@ -101,4 +108,51 @@ class Base
 	    return false;
 	}
     }
+
+    void loadGroups()
+    {
+	try {
+	    final List<NewsGroupWrapper> w = new LinkedList<NewsGroupWrapper>();
+	    final StoredNewsGroup[] g = storing.loadGroups();
+	    Arrays.sort(g);
+	    int[] newCounts = storing.countNewArticlesInGroups(g);
+	    int[] markedCounts = storing.countMarkedArticlesInGroups(g);
+	    for(int i = 0;i < g.length;++i)
+	    {
+		final int newCount = i < newCounts.length?newCounts[i]:0;
+		final int markedCount = i < markedCounts.length?markedCounts[i]:0;
+		if (showAllGroups || newCount > 0 || markedCount > 0)
+		    w.add(new NewsGroupWrapper(g[i], newCount));
+	    }
+	    groups = w.toArray(new NewsGroupWrapper[w.size()]);
+	}
+	catch(PimException e)
+	{
+	    groups = new NewsGroupWrapper[0];
+	    luwrain.crash(e);
+	}
+    }
+
+    ListArea.Model newGroupsModel()
+    {
+	return new GroupsModel();
+    }
+
+    private class GroupsModel implements ListArea.Model
+{
+    @Override public int getItemCount()
+    {
+	return groups.length;
+    }
+    @Override public Object getItem(int index)
+    {
+	if (index < 0 || index >= groups.length)
+	    throw new IllegalArgumentException("Illegal index value (" + index + ")");
+	return groups[index];
+    }
+    @Override public void refresh()
+    {
+	loadGroups();
+    }
+}
 }
