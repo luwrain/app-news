@@ -20,6 +20,8 @@ import java.util.*;
 
 public interface Strings
 {
+    static final String NAME = "luwrain.news";
+
     String appName();
     String groupsAreaName();
     String summaryAreaName();

@@ -29,13 +29,16 @@ class Actions
 {
     private final Luwrain luwrain;
     private final Strings strings;
+    private final Base base;
 
-    Actions(Luwrain luwrain, Strings strings)
+    Actions(Luwrain luwrain, Strings strings, Base base)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(strings, "strings");
+	NullCheck.notNull(base, "base");
 	this.luwrain = luwrain;
 	this.strings = strings;
+	this.base = base;
     }
 
     boolean onSummarySpace(Base base, ListArea groupsArea, ListArea summaryArea)
@@ -116,7 +119,7 @@ luwrain.setActiveArea(viewArea);
 	if (!(obj instanceof NewsGroupWrapper))
 	    return false;
 	final NewsGroupWrapper group = (NewsGroupWrapper)obj;
-	if (base.openGroup(group.getStoredGroup()))
+	if (base.openGroup(group.group))
 	{
 	    summaryArea.redraw(); 
 	    summaryArea.resetHotPoint();
@@ -130,7 +133,7 @@ luwrain.setActiveArea(viewArea);
 	NullCheck.notNull(groupsArea, "groupsArea");
 	NullCheck.notNull(summaryArea, "summaryArea");
 	NullCheck.notNull(group, "group");
-	if (base.markAsReadWholeGroup(group.getStoredGroup()))
+	if (base.markAsReadWholeGroup(group.group))
 	{
 	    groupsArea.refresh();
 	    groupsArea.announceSelected();

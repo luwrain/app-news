@@ -16,25 +16,22 @@
 
 package org.luwrain.app.news;
 
-import org.luwrain.pim.news.StoredNewsGroup;
+import org.luwrain.core.*;
+import org.luwrain.pim.news.*;
 
 class NewsGroupWrapper
 {
-    private StoredNewsGroup group;
+    final StoredNewsGroup group;
     private int newArticleCount;
 
-    public NewsGroupWrapper(StoredNewsGroup group, int newArticleCount)
+    NewsGroupWrapper(StoredNewsGroup group, int newArticleCount)
     {
+	NullCheck.notNull(group, "group");
 	this.group = group;
 	this.newArticleCount = newArticleCount;
     }
 
-    public StoredNewsGroup getStoredGroup()
-    {
-	return group;
-    }
-
-    public String toString()
+    @Override public String toString()
     {
 	if (group == null)
 	    return "";

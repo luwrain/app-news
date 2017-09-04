@@ -27,11 +27,9 @@ import org.luwrain.pim.*;
 
 class NewsApp implements Application, MonoApp
 {
-    static private final String STRINGS_NAME = "luwrain.news";
-
     private Luwrain luwrain = null;
     private Strings strings = null;
-    private final Base base = new Base();
+    private Base base = null;
     private Actions actions = null;
     private ActionLists actionLists = null;
 
@@ -42,14 +40,15 @@ class NewsApp implements Application, MonoApp
     @Override public InitResult onLaunchApp(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
-	final Object o = luwrain.i18n().getStrings(STRINGS_NAME);
+	final Object o = luwrain.i18n().getStrings(Strings.NAME);
 	if (o == null || !(o instanceof Strings))
-	    return new InitResult(InitResult.Type.NO_STRINGS_OBJ, STRINGS_NAME);
+	    return new InitResult(InitResult.Type.NO_STRINGS_OBJ, Strings.NAME);
 	strings = (Strings)o;
 	this.luwrain = luwrain;
-	if (!base.init(luwrain, strings))
+	this.base = new Base(luwrain, strings);
+	if (base.storing == null)
 	    return new InitResult(InitResult.Type.FAILURE);
-	this.actions = new Actions(luwrain, strings);
+	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(strings);
 	createAreas();
 	return new InitResult();

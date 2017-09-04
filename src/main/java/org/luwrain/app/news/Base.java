@@ -25,10 +25,9 @@ import org.luwrain.pim.news.*;
 
 class Base
 {
-    private Luwrain luwrain;
-    private Strings strings;
-    private NewsStoring storing;
-    //    private GroupsModel groupsModel;
+    private final Luwrain luwrain;
+    private final Strings strings;
+final NewsStoring storing;
     private SummaryAppearance summaryAppearance;
 
     private NewsGroupWrapper[] groups = new NewsGroupWrapper[0];
@@ -36,7 +35,7 @@ class Base
     private StoredNewsArticle[] articles = new StoredNewsArticle[0];
     private boolean showAllGroups = false;
 
-    boolean init(Luwrain luwrain, Strings strings)
+Base(Luwrain luwrain, Strings strings)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(strings, "strings");
@@ -44,14 +43,15 @@ class Base
 	this.strings = strings;
 	final Object f =  luwrain.getSharedObject("luwrain.pim.news");
 	if (f == null || !(f instanceof org.luwrain.pim.news.Factory))
-	    return false;
+	{
+	    storing = null;
+	    return;
+	}
 	storing = ((org.luwrain.pim.news.Factory)f).createNewsStoring();
 	if (storing == null)
-	    return false;
+	    return;
 	loadGroups();
-	//	summaryModel = new SummaryModel(storing);
 	summaryAppearance = new SummaryAppearance(luwrain, strings);
-	return true;
     }
 
     boolean openGroup(StoredNewsGroup newGroup)
