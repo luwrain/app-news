@@ -28,11 +28,12 @@ class Base
     private Luwrain luwrain;
     private Strings strings;
     private NewsStoring storing;
-    private GroupsModel groupsModel;
-    private SummaryModel summaryModel;
+    //    private GroupsModel groupsModel;
     private SummaryAppearance summaryAppearance;
 
     private NewsGroupWrapper[] groups = new NewsGroupWrapper[0];
+    private StoredNewsGroup group = null;
+    private StoredNewsArticle[] articles = new StoredNewsArticle[0];
     private boolean showAllGroups = false;
 
     boolean init(Luwrain luwrain, Strings strings)
@@ -48,9 +49,25 @@ class Base
 	if (storing == null)
 	    return false;
 	loadGroups();
-	summaryModel = new SummaryModel(storing);
+	//	summaryModel = new SummaryModel(storing);
 	summaryAppearance = new SummaryAppearance(luwrain, strings);
 	return true;
+    }
+
+    boolean openGroup(StoredNewsGroup newGroup)
+    {
+	NullCheck.notNull(newGroup, "newGroup");
+	if (this.group != null && this.group == newGroup)
+	    return false;
+	this.group = newGroup;
+	loadArticles();
+	return true;
+    }
+
+    void closeGroup()
+    {
+	group = null;
+	articles = new StoredNewsArticle[0];
     }
 
     NewsStoring getStoring()
@@ -61,12 +78,6 @@ class Base
     void setShowAllGroups(boolean value)
     {
 	this.showAllGroups = value;
-    }
-
-
-    SummaryModel getSummaryModel()
-    {
-	return summaryModel;
     }
 
     SummaryAppearance getSummaryAppearance()
@@ -109,6 +120,25 @@ class Base
 	}
     }
 
+boolean toggleArticleMark(int index)
+    {
+	if (articles == null || 
+index < 0 || index >= articles.length)
+	    return false;
+	final StoredNewsArticle article = articles[index];
+	try {
+	    if (article.getState() == NewsArticle.MARKED)
+		article.setState(NewsArticle.READ); else
+		article.setState(NewsArticle.MARKED);
+	return true;
+	}
+	catch (PimException e)
+	{
+	    luwrain.crash(e);
+	    return true;
+	}
+    }
+
     void loadGroups()
     {
 	try {
@@ -133,9 +163,35 @@ class Base
 	}
     }
 
+void loadArticles()
+    {
+	if (group == null)
+	{
+	    articles = new StoredNewsArticle[0];
+	    return;
+	}
+	try {
+	    articles = storing.loadArticlesInGroupWithoutRead(group);
+	    if (articles == null || articles.length < 1)
+		articles = storing.loadArticlesInGroup(group);
+	    if (articles != null)
+		Arrays.sort(articles);
+	}
+	catch(PimException e)
+	{
+	    luwrain.crash(e);
+	    articles = new StoredNewsArticle[0];
+	}
+    }
+
     ListArea.Model newGroupsModel()
     {
 	return new GroupsModel();
+    }
+
+    ListArea.Model newArticlesModel()
+    {
+	return new ArticlesModel();
     }
 
     private class GroupsModel implements ListArea.Model
@@ -153,6 +209,24 @@ class Base
     @Override public void refresh()
     {
 	loadGroups();
+    }
+}
+
+    private class ArticlesModel implements ListArea.Model
+{
+    @Override public int getItemCount()
+    {
+	return articles.length;
+    }
+    @Override public Object getItem(int index)
+    {
+	if (index < 0 || index >= articles.length)
+	    throw new IllegalArgumentException("Illegal index value (" + index + ")");
+	return articles[index];
+    }
+    @Override public void refresh()
+    {
+	loadArticles();
     }
 }
 }

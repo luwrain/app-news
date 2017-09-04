@@ -38,8 +38,7 @@ class Actions
 	this.strings = strings;
     }
 
-    boolean onSummarySpace(Base base,
-			   ListArea groupsArea, ListArea summaryArea)
+    boolean onSummarySpace(Base base, ListArea groupsArea, ListArea summaryArea)
     {
 	NullCheck.notNull(base, "base");
 	NullCheck.notNull(groupsArea, "groupsArea");
@@ -49,10 +48,10 @@ class Actions
 	    return false;
 	if (!base.markAsRead((StoredNewsArticle)obj))
 	    return false;
-	luwrain.onAreaNewContent(summaryArea);
+	summaryArea.redraw();
 	groupsArea.refresh();
 	final int index = summaryArea.selectedIndex();
-	if (index + 1 >= base.getSummaryModel().getItemCount())
+	if (index + 1 >= summaryArea.getListModel().getItemCount())
 	    luwrain.setActiveArea(groupsArea); else
 	    summaryArea.select(index + 1, true);
 	return true;
@@ -117,19 +116,15 @@ luwrain.setActiveArea(viewArea);
 	if (!(obj instanceof NewsGroupWrapper))
 	    return false;
 	final NewsGroupWrapper group = (NewsGroupWrapper)obj;
-	if (group.getStoredGroup() != base.getSummaryModel().getGroup())
+	if (base.openGroup(group.getStoredGroup()))
 	{
-	    base.getSummaryModel().setGroup(group.getStoredGroup());
-	    summaryArea.refresh(); 
+	    summaryArea.redraw(); 
 	    summaryArea.resetHotPoint();
-	    //FIXME:reset view;
 	}
-	//	gotoSummary();
 	return true;
     }
 
-    boolean markAsReadWholeGroup(Base base, ListArea groupsArea,
-				 ListArea summaryArea, NewsGroupWrapper group)
+    boolean markAsReadWholeGroup(Base base, ListArea groupsArea, ListArea summaryArea, NewsGroupWrapper group)
     {
 	NullCheck.notNull(base, "base");
 	NullCheck.notNull(groupsArea, "groupsArea");
@@ -140,7 +135,7 @@ luwrain.setActiveArea(viewArea);
 	    groupsArea.refresh();
 	    groupsArea.announceSelected();
 	}
-	base.getSummaryModel().setGroup(null);
+	base.closeGroup();
 	summaryArea.refresh();
 	return true;
     }

@@ -126,7 +126,7 @@ class NewsApp implements Application, MonoApp
 
 	final ListArea.Params summaryParams = new ListArea.Params();
 	summaryParams.context = new DefaultControlEnvironment(luwrain);
-	summaryParams.model = base.getSummaryModel();
+	summaryParams.model = base.newArticlesModel();
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
 	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(base, summaryArea, viewArea, obj);
 	summaryParams.name = strings.summaryAreaName();
