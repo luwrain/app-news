@@ -41,9 +41,8 @@ class Actions
 	this.base = base;
     }
 
-    boolean onSummarySpace(Base base, ListArea groupsArea, ListArea summaryArea)
+    boolean onSummarySpace(ListArea groupsArea, ListArea summaryArea)
     {
-	NullCheck.notNull(base, "base");
 	NullCheck.notNull(groupsArea, "groupsArea");
 	NullCheck.notNull(summaryArea, "summaryArea");
 	final Object obj = summaryArea.selected();
@@ -66,11 +65,9 @@ class Actions
 	return true;
     }
 
-    boolean onSummaryClick(Base base, 
-			   ListArea summaryArea, DoctreeArea viewArea,
-			   Object obj)
+    boolean onSummaryClick(ListArea summaryArea,
+DoctreeArea viewArea, Object obj)
     {
-	NullCheck.notNull(base, "base");
 	NullCheck.notNull(summaryArea, "summaryArea");
 	NullCheck.notNull(viewArea, "viewArea");
 	NullCheck.notNull(obj, "obj");
@@ -102,18 +99,16 @@ luwrain.setActiveArea(viewArea);
 	return true;
     }
 
-    boolean setShowAllGroupsMode(Base base, ListArea groupsArea, boolean value)
+    boolean setShowAllGroupsMode(ListArea groupsArea, boolean value)
     {
-	NullCheck.notNull(base, "base");
 	NullCheck.notNull(groupsArea, "groupsArea");
 	base.setShowAllGroups(value);
 	groupsArea.refresh();
 	return true;
     }
 
-    boolean onGroupsClick(Base base, ListArea summaryArea, Object obj)
+    boolean onGroupsClick(ListArea summaryArea, Object obj)
     {
-	NullCheck.notNull(base, "base");
 	NullCheck.notNull(summaryArea, "summaryArea");
 	NullCheck.notNull(obj, "obj");
 	if (!(obj instanceof NewsGroupWrapper))
@@ -127,9 +122,8 @@ luwrain.setActiveArea(viewArea);
 	return true;
     }
 
-    boolean markAsReadWholeGroup(Base base, ListArea groupsArea, ListArea summaryArea, NewsGroupWrapper group)
+    boolean markAsReadWholeGroup(ListArea groupsArea, ListArea summaryArea, NewsGroupWrapper group)
     {
-	NullCheck.notNull(base, "base");
 	NullCheck.notNull(groupsArea, "groupsArea");
 	NullCheck.notNull(summaryArea, "summaryArea");
 	NullCheck.notNull(group, "group");

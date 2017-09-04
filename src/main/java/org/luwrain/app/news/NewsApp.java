@@ -56,13 +56,12 @@ class NewsApp implements Application, MonoApp
 
     private void createAreas()
     {
-
 	final ListArea.Params groupsParams = new ListArea.Params();
 	groupsParams.context = new DefaultControlEnvironment(luwrain);
 	groupsParams.model = base.newGroupsModel();
 	groupsParams.appearance = new ListUtils.DefaultAppearance(groupsParams.context, Suggestions.CLICKABLE_LIST_ITEM);
 	groupsParams.clickHandler = (area, index, obj)->{
-	    if (!actions.onGroupsClick(base, summaryArea, obj))
+	    if (!actions.onGroupsClick(summaryArea, obj))
 		return false;
 	    luwrain.setActiveArea(summaryArea);
 	    return true;
@@ -87,9 +86,9 @@ class NewsApp implements Application, MonoApp
 			      switch(event.getChar())
 			      {
 			      case '=':
-				  return actions.setShowAllGroupsMode(base, groupsArea, true);
+				  return actions.setShowAllGroupsMode(groupsArea, true);
 			      case '-':
-				  return actions.setShowAllGroupsMode(base, groupsArea, false);
+				  return actions.setShowAllGroupsMode(groupsArea, false);
 			      }
 		    return super.onKeyboardEvent(event);
 		}
@@ -127,13 +126,14 @@ class NewsApp implements Application, MonoApp
 	summaryParams.context = new DefaultControlEnvironment(luwrain);
 	summaryParams.model = base.newArticlesModel();
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
-	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(base, summaryArea, viewArea, obj);
+	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(summaryArea, viewArea, obj);
 	summaryParams.name = strings.summaryAreaName();
 	summaryParams.flags = EnumSet.of(ListArea.Flags.EMPTY_LINE_BOTTOM);
 
 	summaryArea = new ListArea(summaryParams) {
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
 		{
+		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())
 			switch(event.getSpecial())
 			{
@@ -150,7 +150,7 @@ class NewsApp implements Application, MonoApp
 			switch (event.getChar())
 			{
 			case ' ':
-			    return actions.onSummarySpace(base, groupsArea, summaryArea);
+			    return actions.onSummarySpace(groupsArea, summaryArea);
 			}
 		    return super.onKeyboardEvent(event);
 		}
@@ -223,11 +223,11 @@ class NewsApp implements Application, MonoApp
 			if (ActionEvent.isAction(event, "fetch"))
 				  return actions.launchNewsFetch();
 			if (ActionEvent.isAction(event, "mark-all-as-read"))
-			    return actions.markAsReadWholeGroup(base, groupsArea, summaryArea, (NewsGroupWrapper)groupsArea.selected());
+			    return actions.markAsReadWholeGroup(groupsArea, summaryArea, (NewsGroupWrapper)groupsArea.selected());
 			if (ActionEvent.isAction(event, "show-with-read-only"))
-			    return actions.setShowAllGroupsMode(base, groupsArea, true);
+			    return actions.setShowAllGroupsMode(groupsArea, true);
 			if (ActionEvent.isAction(event, "hide-with-read-only"))
-			    return actions.setShowAllGroupsMode(base, groupsArea, false);
+			    return actions.setShowAllGroupsMode(groupsArea, false);
 			return false;
  }
 
