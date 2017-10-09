@@ -81,7 +81,6 @@ DoctreeArea viewArea, Object obj)
 	if (res.type() == StringLoader.Result.Type.OK)
 	{
 	    final Node root = res.doc.getRoot();
-	    root.addSubnode(NodeFactory.newEmptyLine());
 	    root.addSubnode(NodeFactory.newPara(strings.articleUrl(article.getUrl())));
 	    root.addSubnode(NodeFactory.newPara(strings.articleTitle(article.getTitle())));
 	    res.doc.commit();
