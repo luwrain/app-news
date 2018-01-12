@@ -41,13 +41,7 @@ Base(Luwrain luwrain, Strings strings)
 	NullCheck.notNull(strings, "strings");
 	this.luwrain = luwrain;
 	this.strings = strings;
-	final Object f =  luwrain.getSharedObject("luwrain.pim.news");
-	if (f == null || !(f instanceof org.luwrain.pim.news.Factory))
-	{
-	    storing = null;
-	    return;
-	}
-	storing = ((org.luwrain.pim.news.Factory)f).createNewsStoring();
+	this.storing = org.luwrain.pim.Connections.getNewsStoring(luwrain, true);
 	if (storing == null)
 	    return;
 	loadGroups();
@@ -105,7 +99,7 @@ Base(Luwrain luwrain, Strings strings)
 	NullCheck.notNull(group, "group");
 	try {
 	    StoredNewsArticle articles[];
-	    articles = storing.loadArticlesInGroupWithoutRead(group);
+	    articles = storing.getArticles().loadWithoutRead(group);
 	    if (articles == null || articles.length < 1)
 		return true;
 	    for(StoredNewsArticle a: articles)
@@ -143,10 +137,10 @@ index < 0 || index >= articles.length)
     {
 	try {
 	    final List<NewsGroupWrapper> w = new LinkedList<NewsGroupWrapper>();
-	    final StoredNewsGroup[] g = storing.loadGroups();
+	    final StoredNewsGroup[] g = storing.getGroups().load();
 	    Arrays.sort(g);
-	    int[] newCounts = storing.countNewArticlesInGroups(g);
-	    int[] markedCounts = storing.countMarkedArticlesInGroups(g);
+	    int[] newCounts = storing.getArticles().countNewInGroups(g);
+	    int[] markedCounts = storing.getArticles().countMarkedInGroups(g);
 	    for(int i = 0;i < g.length;++i)
 	    {
 		final int newCount = i < newCounts.length?newCounts[i]:0;
@@ -171,9 +165,9 @@ void loadArticles()
 	    return;
 	}
 	try {
-	    articles = storing.loadArticlesInGroupWithoutRead(group);
+	    articles = storing.getArticles().loadWithoutRead(group);
 	    if (articles == null || articles.length < 1)
-		articles = storing.loadArticlesInGroup(group);
+		articles = storing.getArticles().load(group);
 	    if (articles != null)
 		Arrays.sort(articles);
 	}

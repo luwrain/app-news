@@ -90,7 +90,7 @@ DoctreeArea viewArea, Object obj)
 	catch(MalformedURLException e)
 	{
 	    //FIXME:
-	    luwrain.message("url", Luwrain.MESSAGE_ERROR);
+	    luwrain.message("url", Luwrain.MessageType.ERROR);
 	    e.printStackTrace();
 	    return true;
 	}
