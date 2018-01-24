@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2017 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
 
    This file is part of LUWRAIN.
 
@@ -25,7 +25,7 @@ import org.luwrain.controls.doctree.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.pim.*;
 
-class NewsApp implements Application, MonoApp
+class App implements Application, MonoApp
 {
     private Luwrain luwrain = null;
     private Strings strings = null;
@@ -51,6 +51,7 @@ class NewsApp implements Application, MonoApp
 	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(strings);
 	createAreas();
+	luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
 	return new InitResult();
     }
 
