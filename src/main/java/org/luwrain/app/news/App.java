@@ -68,7 +68,6 @@ class App implements Application, MonoApp
 	    return true;
 	};
 	groupsParams.name = strings.groupsAreaName();
-	groupsParams.flags = EnumSet.of(ListArea.Flags.EMPTY_LINE_BOTTOM);
 
 	groupsArea = new ListArea(groupsParams) {
 		      @Override public boolean onKeyboardEvent(KeyboardEvent event)
@@ -80,6 +79,9 @@ class App implements Application, MonoApp
 			      case TAB:
 				  luwrain.setActiveArea(summaryArea);
 			    return true;
+			      case ESCAPE:
+				  closeApp();
+				  return true;
 			      default:
 				  return super.onKeyboardEvent(event);
 			      }
@@ -108,6 +110,9 @@ class App implements Application, MonoApp
 			}
 		    switch(event.getCode())
 		    {
+		    case REFRESH:
+				luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
+				return super.onEnvironmentEvent(event);
 		    case ACTION:
 			return onGroupsAreaAction(event);
 		    case CLOSE:
@@ -129,7 +134,6 @@ class App implements Application, MonoApp
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
 	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(summaryArea, viewArea, obj);
 	summaryParams.name = strings.summaryAreaName();
-	summaryParams.flags = EnumSet.of(ListArea.Flags.EMPTY_LINE_BOTTOM);
 
 	summaryArea = new ListArea(summaryParams) {
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
@@ -143,6 +147,9 @@ class App implements Application, MonoApp
 			    return true;
 			case BACKSPACE:
 			    luwrain.setActiveArea(groupsArea);
+			    return true;
+			case ESCAPE:
+			    closeApp();
 			    return true;
 			case F9:
 			    return actions.launchNewsFetch();
@@ -191,6 +198,9 @@ class App implements Application, MonoApp
 			    return true;
 			case BACKSPACE:
 			    luwrain.setActiveArea(summaryArea);
+			    return true;
+			case ESCAPE:
+			    closeApp();
 			    return true;
 			}
 		    return super.onKeyboardEvent(event);
