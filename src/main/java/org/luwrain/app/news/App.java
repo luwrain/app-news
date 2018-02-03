@@ -35,7 +35,7 @@ class App implements Application, MonoApp
 
     private ListArea groupsArea;
     private ListArea summaryArea;
-    private DoctreeArea viewArea;
+    private DocumentArea viewArea;
 
     @Override public InitResult onLaunchApp(Luwrain luwrain)
     {
@@ -184,7 +184,7 @@ class App implements Application, MonoApp
 		}
 	};
 
-	viewArea = new DoctreeArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.doctree.Strings)luwrain.i18n().getStrings(org.luwrain.controls.doctree.Strings.NAME))){
+	viewArea = new DocumentArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.doctree.Strings)luwrain.i18n().getStrings(org.luwrain.controls.doctree.Strings.NAME))){
 		@Override public boolean onKeyboardEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");

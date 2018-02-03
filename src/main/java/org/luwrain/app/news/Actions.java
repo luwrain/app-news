@@ -66,7 +66,7 @@ class Actions
     }
 
     boolean onSummaryClick(ListArea summaryArea,
-DoctreeArea viewArea, Object obj)
+DocumentArea viewArea, Object obj)
     {
 	NullCheck.notNull(summaryArea, "summaryArea");
 	NullCheck.notNull(viewArea, "viewArea");
@@ -136,7 +136,7 @@ luwrain.setActiveArea(viewArea);
 	return true;
     }
 
-    boolean onOpenUrl(DoctreeArea area)
+    boolean onOpenUrl(DocumentArea area)
     {
 	NullCheck.notNull(area, "area");
 	final Document doc = area.getDocument();
