@@ -70,7 +70,7 @@ class App implements Application, MonoApp
 	groupsParams.name = strings.groupsAreaName();
 
 	groupsArea = new ListArea(groupsParams) {
-		      @Override public boolean onKeyboardEvent(KeyboardEvent event)
+		      @Override public boolean onInputEvent(KeyboardEvent event)
 		      {
 			  NullCheck.notNull(event, "event");
 			  if (event.isSpecial() && !event.isModified())
@@ -83,7 +83,7 @@ class App implements Application, MonoApp
 				  closeApp();
 				  return true;
 			      default:
-				  return super.onKeyboardEvent(event);
+				  return super.onInputEvent(event);
 			      }
 			  if (!event.isSpecial() && !event.isModified())
 			      switch(event.getChar())
@@ -93,7 +93,7 @@ class App implements Application, MonoApp
 			      case '-':
 				  return actions.setShowAllGroupsMode(groupsArea, false);
 			      }
-		    return super.onKeyboardEvent(event);
+		    return super.onInputEvent(event);
 		}
 		@Override public boolean onSystemEvent(EnvironmentEvent event)
 		{
@@ -136,7 +136,7 @@ class App implements Application, MonoApp
 	summaryParams.name = strings.summaryAreaName();
 
 	summaryArea = new ListArea(summaryParams) {
-		@Override public boolean onKeyboardEvent(KeyboardEvent event)
+		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())
@@ -160,7 +160,7 @@ class App implements Application, MonoApp
 			case ' ':
 			    return actions.onSummarySpace(groupsArea, summaryArea);
 			}
-		    return super.onKeyboardEvent(event);
+		    return super.onInputEvent(event);
 		}
 		@Override public boolean onSystemEvent(EnvironmentEvent event)
 		{
@@ -185,7 +185,7 @@ class App implements Application, MonoApp
 	};
 
 	viewArea = new DocumentArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.doctree.Strings)luwrain.i18n().getStrings(org.luwrain.controls.doctree.Strings.NAME))){
-		@Override public boolean onKeyboardEvent(KeyboardEvent event)
+		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())
@@ -203,7 +203,7 @@ class App implements Application, MonoApp
 			    closeApp();
 			    return true;
 			}
-		    return super.onKeyboardEvent(event);
+		    return super.onInputEvent(event);
 		}
 		@Override public boolean onSystemEvent(EnvironmentEvent event)
 		{
