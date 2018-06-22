@@ -95,7 +95,7 @@ class App implements Application, MonoApp
 			      }
 		    return super.onKeyboardEvent(event);
 		}
-		@Override public boolean onEnvironmentEvent(EnvironmentEvent event)
+		@Override public boolean onSystemEvent(EnvironmentEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.getType() == EnvironmentEvent.Type.BROADCAST)
@@ -106,20 +106,20 @@ class App implements Application, MonoApp
 			    refresh();
 			    return true;
 			default:
-			    super.onEnvironmentEvent(event);
+			    super.onSystemEvent(event);
 			}
 		    switch(event.getCode())
 		    {
 		    case REFRESH:
 				luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
-				return super.onEnvironmentEvent(event);
+				return super.onSystemEvent(event);
 		    case ACTION:
 			return onGroupsAreaAction(event);
 		    case CLOSE:
 			closeApp();
 			return true;
 		    default:
-			return super.onEnvironmentEvent(event);
+			return super.onSystemEvent(event);
 		    }
 		}
 		      @Override public Action[] getAreaActions()
@@ -162,11 +162,11 @@ class App implements Application, MonoApp
 			}
 		    return super.onKeyboardEvent(event);
 		}
-		@Override public boolean onEnvironmentEvent(EnvironmentEvent event)
+		@Override public boolean onSystemEvent(EnvironmentEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
-			return super.onEnvironmentEvent(event);
+			return super.onSystemEvent(event);
 		    switch(event.getCode())
 		    {
 		    case ACTION:
@@ -175,7 +175,7 @@ class App implements Application, MonoApp
 			closeApp();
 			return true;
 		    default:
-			return super.onEnvironmentEvent(event);
+			return super.onSystemEvent(event);
 		    }
 		}
 		@Override public Action[] getAreaActions()
@@ -205,11 +205,11 @@ class App implements Application, MonoApp
 			}
 		    return super.onKeyboardEvent(event);
 		}
-		@Override public boolean onEnvironmentEvent(EnvironmentEvent event)
+		@Override public boolean onSystemEvent(EnvironmentEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
-			return super.onEnvironmentEvent(event);
+			return super.onSystemEvent(event);
 		    switch(event.getCode())
 		    {
 		    case OK:
@@ -218,7 +218,7 @@ class App implements Application, MonoApp
 			closeApp();
 			return true;
 		    default:
-			return super.onEnvironmentEvent(event);
+			return super.onSystemEvent(event);
 		    }
 		}
 		@Override public String getAreaName()
