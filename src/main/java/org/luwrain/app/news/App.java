@@ -124,6 +124,8 @@ final class App implements Application, MonoApp
 				  return actions.launchNewsFetch();
 			if (ActionEvent.isAction(event, "mark-all-as-read"))
 			    return actions.markAsReadWholeGroup(groupsArea, summaryArea, (GroupWrapper)groupsArea.selected());
+									if (ActionEvent.isAction(event, "add-group"))
+			    return actions.onAddGroup(groupsArea);
 						if (ActionEvent.isAction(event, "delete-group"))
 			    return actions.onDeleteGroup(groupsArea);
 			if (ActionEvent.isAction(event, "show-with-read-only"))

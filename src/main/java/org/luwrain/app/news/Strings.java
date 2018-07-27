@@ -41,7 +41,10 @@ public interface Strings
     String groupPropertiesAreaName(String groupArea);
     String groupPropertiesName();
     String groupPropertiesUrls();
-
     String groupDeletingPopupName();
     String groupDeletingPopupText(String groupName);
+    String actionAddGroup();
+    String groupAddingPopupName();
+    String groupAddingPopupPrefix();
+    String groupAddingNameMayNotBeEmpty();
 }

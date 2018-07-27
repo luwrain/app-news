@@ -41,6 +41,27 @@ final class Actions
 	this.base = base;
     }
 
+    boolean onAddGroup(ListArea groupsArea)
+    {
+	NullCheck.notNull(groupsArea, "groupsArea");
+	final String name = base.conv.newGroupName();
+	if (name == null)
+	    return false;
+	final NewsGroup group = new NewsGroup();
+	group.name = name;
+	try {
+	    base.storing.getGroups().save(group);
+	}
+	catch(org.luwrain.pim.PimException e)
+	{
+	    luwrain.crash(e);
+	    return true;
+	}
+	base.loadGroups();
+	groupsArea.redraw();
+	return true;
+    }
+
     boolean onDeleteGroup(ListArea groupsArea)
     {
 	NullCheck.notNull(groupsArea, "groupsArea");
