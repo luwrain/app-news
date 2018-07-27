@@ -26,14 +26,8 @@ public interface Strings
     String groupsAreaName();
     String summaryAreaName();
     String viewAreaName();
-    String errorReadingArticles();
     String readPrefix();
     String markedPrefix();
-    String noSummaryItems();
-    String noSummaryItemsAbove();
-    String noSummaryItemsBelow();
-    String errorUpdatingArticleState();
-    String noMoreUnreadInGroup();
     String articleUrl(String url);
     String articleTitle(String title);
     String actionFetch();
@@ -43,4 +37,7 @@ public interface Strings
     String actionReadArticle();
     String actionMarkArticle();
     String actionUnmarkArticle();
+    String groupPropertiesAreaName(String groupArea);
+    String groupPropertiesName();
+    String groupPropertiesUrls();
 }

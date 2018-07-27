@@ -25,7 +25,7 @@ import org.luwrain.controls.doctree.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.pim.*;
 
-class App implements Application, MonoApp
+final class App implements Application, MonoApp
 {
     private Luwrain luwrain = null;
     private Strings strings = null;
@@ -36,6 +36,7 @@ class App implements Application, MonoApp
     private ListArea groupsArea;
     private ListArea summaryArea;
     private DocumentArea viewArea;
+    private AreaLayoutHelper layout = null;
 
     @Override public InitResult onLaunchApp(Luwrain luwrain)
     {
@@ -43,7 +44,7 @@ class App implements Application, MonoApp
 	final Object o = luwrain.i18n().getStrings(Strings.NAME);
 	if (o == null || !(o instanceof Strings))
 	    return new InitResult(InitResult.Type.NO_STRINGS_OBJ, Strings.NAME);
-	strings = (Strings)o;
+	this.strings = (Strings)o;
 	this.luwrain = luwrain;
 	this.base = new Base(luwrain, strings);
 	if (base.storing == null)
@@ -51,6 +52,10 @@ class App implements Application, MonoApp
 	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(strings);
 	createAreas();
+	this.layout = new AreaLayoutHelper(()->{
+		luwrain.onNewAreaLayout();
+		luwrain.announceActiveArea();
+	    }, new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, groupsArea, summaryArea, viewArea));
 	luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
 	return new InitResult();
     }
@@ -68,8 +73,7 @@ class App implements Application, MonoApp
 	    return true;
 	};
 	groupsParams.name = strings.groupsAreaName();
-
-	groupsArea = new ListArea(groupsParams) {
+	this.groupsArea = new ListArea(groupsParams) {
 		      @Override public boolean onInputEvent(KeyboardEvent event)
 		      {
 			  NullCheck.notNull(event, "event");
@@ -113,7 +117,9 @@ class App implements Application, MonoApp
 		    case REFRESH:
 				luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
 				return super.onSystemEvent(event);
-		    case ACTION:
+							case PROPERTIES:
+			    return showGroupProps();
+						    case ACTION:
 			return onGroupsAreaAction(event);
 		    case CLOSE:
 			closeApp();
@@ -134,8 +140,7 @@ class App implements Application, MonoApp
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
 	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(summaryArea, viewArea, obj);
 	summaryParams.name = strings.summaryAreaName();
-
-	summaryArea = new ListArea(summaryParams) {
+	this.summaryArea = new ListArea(summaryParams) {
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
@@ -184,7 +189,7 @@ class App implements Application, MonoApp
 		}
 	};
 
-	viewArea = new DocumentArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.doctree.Strings)luwrain.i18n().getStrings(org.luwrain.controls.doctree.Strings.NAME))){
+	this.viewArea = new DocumentArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.doctree.Strings)luwrain.i18n().getStrings(org.luwrain.controls.doctree.Strings.NAME))){
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
@@ -248,6 +253,46 @@ class App implements Application, MonoApp
 	return false;
  }
 
+    private boolean showGroupProps()
+    {
+	final Object obj = groupsArea.selected();
+	if (obj == null || !(obj instanceof NewsGroupWrapper))
+	    return false;
+	final NewsGroupWrapper wrapper = (NewsGroupWrapper)obj;
+	final FormArea area = new FormArea(new DefaultControlEnvironment(luwrain), strings.groupPropertiesAreaName(wrapper.group.getName())) {
+		@Override public boolean onInputEvent(KeyboardEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    if (event.isSpecial() && !event.isModified())
+			switch(event.getSpecial())
+			{
+			case ESCAPE:
+			    layout.closeTempLayout();
+			    return true;
+			}
+		    return super.onInputEvent(event);
+		}
+		@Override public boolean onSystemEvent(EnvironmentEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
+			return super.onSystemEvent(event);
+		    switch(event.getCode())
+		    {
+		    case CLOSE:
+			closeApp();
+			return true;
+		    default:
+			return super.onSystemEvent(event);
+		    }
+		}
+	    };
+	area.addEdit("name", strings.groupPropertiesName(), wrapper.group.getName());
+	area.activateMultilineEdit(strings.groupPropertiesUrls(), wrapper.group.getUrls(), true);
+	layout.openTempArea(area);
+	return true;
+    }
+
     @Override public void closeApp()
     {
 	luwrain.closeApp();
@@ -266,6 +311,6 @@ class App implements Application, MonoApp
 
     @Override public AreaLayout getAreaLayout()
     {
-	return new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, groupsArea, summaryArea, viewArea);
+	return layout.getLayout();
     }
 }
