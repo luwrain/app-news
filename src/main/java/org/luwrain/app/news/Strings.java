@@ -22,29 +22,29 @@ public interface Strings
 {
     static final String NAME = "luwrain.news";
 
-    String appName();
-    String groupsAreaName();
-    String summaryAreaName();
-    String viewAreaName();
-    String readPrefix();
-    String markedPrefix();
-    String articleUrl(String url);
-    String articleTitle(String title);
-    String actionFetch();
+    String actionAddGroup();
     String actionDeleteGroup();
-    String actionMarkAllAsRead();
-    String actionShowWithReadOnly();
+    String actionFetch();
     String actionHideWithReadOnly();
-    String actionReadArticle();
+    String actionMarkAllAsRead();
     String actionMarkArticle();
+    String actionReadArticle();
+    String actionShowWithReadOnly();
     String actionUnmarkArticle();
+    String appName();
+    String articleTitle(String title);
+    String articleUrl(String url);
+    String groupAddingNameMayNotBeEmpty();
+    String groupAddingPopupName();
+    String groupAddingPopupPrefix();
+    String groupDeletingPopupName();
+    String groupDeletingPopupText(String groupName);
     String groupPropertiesAreaName(String groupArea);
     String groupPropertiesName();
     String groupPropertiesUrls();
-    String groupDeletingPopupName();
-    String groupDeletingPopupText(String groupName);
-    String actionAddGroup();
-    String groupAddingPopupName();
-    String groupAddingPopupPrefix();
-    String groupAddingNameMayNotBeEmpty();
+    String groupsAreaName();
+    String markedPrefix();
+    String readPrefix();
+    String summaryAreaName();
+    String viewAreaName();
 }
