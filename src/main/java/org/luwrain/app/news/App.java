@@ -239,7 +239,7 @@ final class App implements Application, MonoApp
 			if (ActionEvent.isAction(event, "fetch"))
 				  return actions.launchNewsFetch();
 			if (ActionEvent.isAction(event, "mark-all-as-read"))
-			    return actions.markAsReadWholeGroup(groupsArea, summaryArea, (NewsGroupWrapper)groupsArea.selected());
+			    return actions.markAsReadWholeGroup(groupsArea, summaryArea, (GroupWrapper)groupsArea.selected());
 			if (ActionEvent.isAction(event, "show-with-read-only"))
 			    return actions.setShowAllGroupsMode(groupsArea, true);
 			if (ActionEvent.isAction(event, "hide-with-read-only"))
@@ -256,9 +256,9 @@ final class App implements Application, MonoApp
     private boolean showGroupProps()
     {
 	final Object obj = groupsArea.selected();
-	if (obj == null || !(obj instanceof NewsGroupWrapper))
+	if (obj == null || !(obj instanceof GroupWrapper))
 	    return false;
-	final NewsGroupWrapper wrapper = (NewsGroupWrapper)obj;
+	final GroupWrapper wrapper = (GroupWrapper)obj;
 	final FormArea area = new FormArea(new DefaultControlEnvironment(luwrain), strings.groupPropertiesAreaName(wrapper.group.getName())) {
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{

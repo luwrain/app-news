@@ -30,7 +30,7 @@ class Base
 final NewsStoring storing;
     private SummaryAppearance summaryAppearance;
 
-    private NewsGroupWrapper[] groups = new NewsGroupWrapper[0];
+    private GroupWrapper[] groups = new GroupWrapper[0];
     private StoredNewsGroup group = null;
     private StoredNewsArticle[] articles = new StoredNewsArticle[0];
     private boolean showAllGroups = false;
@@ -136,7 +136,7 @@ index < 0 || index >= articles.length)
     void loadGroups()
     {
 	try {
-	    final List<NewsGroupWrapper> w = new LinkedList<NewsGroupWrapper>();
+	    final List<GroupWrapper> w = new LinkedList();
 	    final StoredNewsGroup[] g = storing.getGroups().load();
 	    Arrays.sort(g);
 	    int[] newCounts = storing.getArticles().countNewInGroups(g);
@@ -146,13 +146,13 @@ index < 0 || index >= articles.length)
 		final int newCount = i < newCounts.length?newCounts[i]:0;
 		final int markedCount = i < markedCounts.length?markedCounts[i]:0;
 		if (showAllGroups || newCount > 0 || markedCount > 0)
-		    w.add(new NewsGroupWrapper(g[i], newCount));
+		    w.add(new GroupWrapper(g[i], newCount));
 	    }
-	    groups = w.toArray(new NewsGroupWrapper[w.size()]);
+	    groups = w.toArray(new GroupWrapper[w.size()]);
 	}
 	catch(PimException e)
 	{
-	    groups = new NewsGroupWrapper[0];
+	    groups = new GroupWrapper[0];
 	    luwrain.crash(e);
 	}
     }

@@ -19,12 +19,12 @@ package org.luwrain.app.news;
 import org.luwrain.core.*;
 import org.luwrain.pim.news.*;
 
-class NewsGroupWrapper
+final class GroupWrapper
 {
     final StoredNewsGroup group;
-    private int newArticleCount;
+    final int newArticleCount;
 
-    NewsGroupWrapper(StoredNewsGroup group, int newArticleCount)
+    GroupWrapper(StoredNewsGroup group, int newArticleCount)
     {
 	NullCheck.notNull(group, "group");
 	this.group = group;

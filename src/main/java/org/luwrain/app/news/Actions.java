@@ -110,9 +110,9 @@ luwrain.setActiveArea(viewArea);
     {
 	NullCheck.notNull(summaryArea, "summaryArea");
 	NullCheck.notNull(obj, "obj");
-	if (!(obj instanceof NewsGroupWrapper))
+	if (!(obj instanceof GroupWrapper))
 	    return false;
-	final NewsGroupWrapper group = (NewsGroupWrapper)obj;
+	final GroupWrapper group = (GroupWrapper)obj;
 	if (base.openGroup(group.group))
 	{
 	    summaryArea.redraw(); 
@@ -121,7 +121,7 @@ luwrain.setActiveArea(viewArea);
 	return true;
     }
 
-    boolean markAsReadWholeGroup(ListArea groupsArea, ListArea summaryArea, NewsGroupWrapper group)
+    boolean markAsReadWholeGroup(ListArea groupsArea, ListArea summaryArea, GroupWrapper group)
     {
 	NullCheck.notNull(groupsArea, "groupsArea");
 	NullCheck.notNull(summaryArea, "summaryArea");
