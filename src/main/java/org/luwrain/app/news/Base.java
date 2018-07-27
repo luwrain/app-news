@@ -23,11 +23,12 @@ import org.luwrain.controls.*;
 import org.luwrain.pim.*;
 import org.luwrain.pim.news.*;
 
-class Base
+final class Base
 {
     private final Luwrain luwrain;
     private final Strings strings;
 final NewsStoring storing;
+    final Conversations conv;
     private SummaryAppearance summaryAppearance;
 
     private GroupWrapper[] groups = new GroupWrapper[0];
@@ -41,6 +42,7 @@ Base(Luwrain luwrain, Strings strings)
 	NullCheck.notNull(strings, "strings");
 	this.luwrain = luwrain;
 	this.strings = strings;
+	this.conv = new Conversations(luwrain, strings);
 	this.storing = org.luwrain.pim.Connections.getNewsStoring(luwrain, true);
 	if (storing == null)
 	    return;
@@ -185,7 +187,7 @@ void loadArticles()
 
     ListArea.Model newArticlesModel()
     {
-	return new ArticlesModel();
+	return new SummaryModel();
     }
 
     private class GroupsModel implements ListArea.Model
@@ -206,7 +208,7 @@ void loadArticles()
     }
 }
 
-    private class ArticlesModel implements ListArea.Model
+    private class SummaryModel implements ListArea.Model
 {
     @Override public int getItemCount()
     {

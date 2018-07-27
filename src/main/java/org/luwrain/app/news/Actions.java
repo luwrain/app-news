@@ -25,7 +25,7 @@ import org.luwrain.controls.doctree.*;
 import org.luwrain.doctree.loading.*;
 import org.luwrain.pim.news.*;
 
-class Actions
+final class Actions
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -39,6 +39,28 @@ class Actions
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
+    }
+
+    boolean onDeleteGroup(ListArea groupsArea)
+    {
+	NullCheck.notNull(groupsArea, "groupsArea");
+	final Object obj = groupsArea.selected();
+	if (obj == null || !(obj instanceof GroupWrapper))
+	    return false;
+	final GroupWrapper wrapper = (GroupWrapper)obj;
+	if (!base.conv.confirmGroupDeleting(wrapper))
+	    return true;
+	try {
+	    base.storing.getGroups().delete(wrapper.group);
+	}
+	catch(org.luwrain.pim.PimException e)
+	{
+	    luwrain.crash(e);
+	    return true;
+	}
+	base.loadGroups();
+	groupsArea.redraw();
+	return true;
     }
 
     boolean onSummarySpace(ListArea groupsArea, ListArea summaryArea)

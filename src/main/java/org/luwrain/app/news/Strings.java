@@ -31,6 +31,7 @@ public interface Strings
     String articleUrl(String url);
     String articleTitle(String title);
     String actionFetch();
+    String actionDeleteGroup();
     String actionMarkAllAsRead();
     String actionShowWithReadOnly();
     String actionHideWithReadOnly();
@@ -40,4 +41,7 @@ public interface Strings
     String groupPropertiesAreaName(String groupArea);
     String groupPropertiesName();
     String groupPropertiesUrls();
+
+    String groupDeletingPopupName();
+    String groupDeletingPopupText(String groupName);
 }

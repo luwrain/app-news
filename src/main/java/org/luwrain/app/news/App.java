@@ -120,7 +120,17 @@ final class App implements Application, MonoApp
 							case PROPERTIES:
 			    return showGroupProps();
 						    case ACTION:
-			return onGroupsAreaAction(event);
+										if (ActionEvent.isAction(event, "fetch"))
+				  return actions.launchNewsFetch();
+			if (ActionEvent.isAction(event, "mark-all-as-read"))
+			    return actions.markAsReadWholeGroup(groupsArea, summaryArea, (GroupWrapper)groupsArea.selected());
+						if (ActionEvent.isAction(event, "delete-group"))
+			    return actions.onDeleteGroup(groupsArea);
+			if (ActionEvent.isAction(event, "show-with-read-only"))
+			    return actions.setShowAllGroupsMode(groupsArea, true);
+			if (ActionEvent.isAction(event, "hide-with-read-only"))
+			    return actions.setShowAllGroupsMode(groupsArea, false);
+			return false;
 		    case CLOSE:
 			closeApp();
 			return true;
@@ -232,20 +242,6 @@ final class App implements Application, MonoApp
 		}
 	    };
     }
-
-    private boolean onGroupsAreaAction(EnvironmentEvent event)
-    {
-	NullCheck.notNull(event, "event");
-			if (ActionEvent.isAction(event, "fetch"))
-				  return actions.launchNewsFetch();
-			if (ActionEvent.isAction(event, "mark-all-as-read"))
-			    return actions.markAsReadWholeGroup(groupsArea, summaryArea, (GroupWrapper)groupsArea.selected());
-			if (ActionEvent.isAction(event, "show-with-read-only"))
-			    return actions.setShowAllGroupsMode(groupsArea, true);
-			if (ActionEvent.isAction(event, "hide-with-read-only"))
-			    return actions.setShowAllGroupsMode(groupsArea, false);
-			return false;
- }
 
     private boolean onSummaryAreaAction(EnvironmentEvent event)
     {

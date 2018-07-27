@@ -20,7 +20,7 @@ import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
 
-class ActionLists
+final class ActionLists
 {
     private final Strings strings;
 
@@ -35,10 +35,13 @@ Action[] getGroupsActions(ListArea groupsArea)
 	if (groupsArea.selectedIndex() < 0)
 			  return new Action[]{
 			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
+			      			      new Action("show-with-read-only", strings.actionShowWithReadOnly(), new KeyboardEvent('=')),
+			      new Action("hide-with-read-only", strings.actionHideWithReadOnly(), new KeyboardEvent('-')),
 			  };
 			  return new Action[]{
 			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
-			      new Action("mark-all-as-read", strings.actionMarkAllAsRead(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
+			      new Action("mark-all-as-read", strings.actionMarkAllAsRead()/*, new KeyboardEvent(KeyboardEvent.Special.DELETE)*/), //FIXME: shift+delete
+			      new Action("delete-group", strings.actionDeleteGroup(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
 			      new Action("show-with-read-only", strings.actionShowWithReadOnly(), new KeyboardEvent('=')),
 			      new Action("hide-with-read-only", strings.actionHideWithReadOnly(), new KeyboardEvent('-')),
 			  };
