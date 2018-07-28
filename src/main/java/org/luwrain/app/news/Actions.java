@@ -108,17 +108,19 @@ final class Actions
 	return true;
     }
 
-    boolean onSummaryClick(ListArea summaryArea,
+    boolean onSummaryClick(ListArea summaryArea, ListArea groupsArea,
 DocumentArea viewArea, Object obj)
     {
 	NullCheck.notNull(summaryArea, "summaryArea");
+	NullCheck.notNull(groupsArea, "groupsArea");
 	NullCheck.notNull(viewArea, "viewArea");
 	NullCheck.notNull(obj, "obj");
 	if (!(obj instanceof StoredNewsArticle))
 	    return false;
 	final StoredNewsArticle article = (StoredNewsArticle)obj;
 	base.markAsRead(article);
-	luwrain.onAreaNewContent(summaryArea);
+	summaryArea.redraw();
+	groupsArea.refresh();
 	try {
 	final StringLoader.Result res = new StringLoader(article.getContent(), "text/html", new URL(article.getUrl())).load();
 	if (res.type() == StringLoader.Result.Type.OK)
@@ -132,9 +134,7 @@ DocumentArea viewArea, Object obj)
 	}
 	catch(MalformedURLException e)
 	{
-	    //FIXME:
-	    luwrain.message("url", Luwrain.MessageType.ERROR);
-	    e.printStackTrace();
+	    luwrain.message("url", Luwrain.MessageType.ERROR);//FIXME:
 	    return true;
 	}
 luwrain.setActiveArea(viewArea);
@@ -146,6 +146,7 @@ luwrain.setActiveArea(viewArea);
 	NullCheck.notNull(groupsArea, "groupsArea");
 	base.setShowAllGroups(value);
 	groupsArea.refresh();
+	luwrain.playSound(Sounds.OK);
 	return true;
     }
 

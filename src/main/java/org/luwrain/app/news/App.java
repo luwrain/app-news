@@ -89,14 +89,6 @@ final class App implements Application, MonoApp
 			      default:
 				  return super.onInputEvent(event);
 			      }
-			  if (!event.isSpecial() && !event.isModified())
-			      switch(event.getChar())
-			      {
-			      case '=':
-				  return actions.setShowAllGroupsMode(groupsArea, true);
-			      case '-':
-				  return actions.setShowAllGroupsMode(groupsArea, false);
-			      }
 		    return super.onInputEvent(event);
 		}
 		@Override public boolean onSystemEvent(EnvironmentEvent event)
@@ -150,7 +142,7 @@ final class App implements Application, MonoApp
 	summaryParams.context = new DefaultControlEnvironment(luwrain);
 	summaryParams.model = base.newArticlesModel();
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
-	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(summaryArea, viewArea, obj);
+	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj);
 	summaryParams.name = strings.summaryAreaName();
 	this.summaryArea = new ListArea(summaryParams) {
 		@Override public boolean onInputEvent(KeyboardEvent event)
@@ -277,6 +269,44 @@ final class App implements Application, MonoApp
 			return super.onSystemEvent(event);
 		    switch(event.getCode())
 		    {
+		    case OK:
+			try {
+			    final String name = getEnteredText("name");
+			    if (name.trim().isEmpty())
+			    {
+				luwrain.message(strings.groupPropertiesNameMayNotBeEmpty(), Luwrain.MessageType.ERROR);
+				return true;
+			    }
+			    wrapper.group.setName(name);
+			    if (getEnteredText("order-index").trim().isEmpty())
+			    {
+				luwrain.message(strings.groupPropertiesInvalidOrderIndex(), Luwrain.MessageType.ERROR);
+				return true;
+			    }
+			    final int orderIndex;
+			    try {
+				orderIndex = Integer.parseInt(getEnteredText("order-index"));
+			    }
+			    catch(NumberFormatException e)
+			    {
+				luwrain.message(strings.groupPropertiesInvalidOrderIndex(), Luwrain.MessageType.ERROR);
+				return true;
+			    }
+			    if (orderIndex < 0)
+			    {
+				luwrain.message(strings.groupPropertiesInvalidOrderIndex(), Luwrain.MessageType.ERROR);
+				return true;
+			    }
+			    wrapper.group.setOrderIndex(orderIndex);
+			    groupsArea.refresh();
+			    layout.closeTempLayout();
+			    return true;
+			}
+			catch(PimException e)
+			{
+			    luwrain.crash(e);
+			    return true;
+			}
 		    case CLOSE:
 			closeApp();
 			return true;
@@ -285,8 +315,20 @@ final class App implements Application, MonoApp
 		    }
 		}
 	    };
+	final String[] urls = wrapper.group.getUrls();
+	final String[] urlLines;
+	if (urls.length != 0)
+	{
+	    final List<String> res = new LinkedList();
+	    for(String s: urls)
+		res.add(s);
+	    res.add("");
+	    urlLines = res.toArray(new String[res.size()]);
+	} else
+	    urlLines = new String[0];
 	area.addEdit("name", strings.groupPropertiesName(), wrapper.group.getName());
-	area.activateMultilineEdit(strings.groupPropertiesUrls(), wrapper.group.getUrls(), true);
+	area.addEdit("order-index", strings.groupPropertiesOrderIndex(), "" + wrapper.group.getOrderIndex());
+	area.activateMultilineEdit(strings.groupPropertiesUrls(), urlLines, true);
 	layout.openTempArea(area);
 	return true;
     }

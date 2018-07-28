@@ -40,7 +40,10 @@ public interface Strings
     String groupDeletingPopupName();
     String groupDeletingPopupText(String groupName);
     String groupPropertiesAreaName(String groupArea);
+    String groupPropertiesInvalidOrderIndex();
     String groupPropertiesName();
+    String groupPropertiesNameMayNotBeEmpty();
+    String groupPropertiesOrderIndex();
     String groupPropertiesUrls();
     String groupsAreaName();
     String markedPrefix();
