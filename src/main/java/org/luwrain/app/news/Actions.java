@@ -21,7 +21,7 @@ import java.net.*;
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
 import org.luwrain.doctree.*;
-import org.luwrain.controls.doctree.*;
+import org.luwrain.controls.doc.*;
 import org.luwrain.doctree.loading.*;
 import org.luwrain.pim.news.*;
 
