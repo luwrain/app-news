@@ -144,6 +144,7 @@ final class App implements Application, MonoApp
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
 	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj);
 	summaryParams.name = strings.summaryAreaName();
+	summaryParams.flags = EnumSet.of(ListArea.Flags.AREA_ANNOUNCE_SELECTED);
 	this.summaryArea = new ListArea(summaryParams) {
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{

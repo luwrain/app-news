@@ -16,13 +16,13 @@
 
 package org.luwrain.app.news;
 
+import java.util.*;
 import java.net.*;
 
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
 import org.luwrain.doctree.*;
 import org.luwrain.controls.doc.*;
-import org.luwrain.doctree.loading.*;
 import org.luwrain.pim.news.*;
 
 final class Actions
@@ -117,26 +117,33 @@ DocumentArea viewArea, Object obj)
 	NullCheck.notNull(obj, "obj");
 	if (!(obj instanceof StoredNewsArticle))
 	    return false;
+	final DocumentBuilder docBuilder = new DocumentBuilderLoader().newDocumentBuilder(luwrain, ContentTypes.TEXT_HTML_DEFAULT);
+	if (docBuilder == null)
+	    return false;
 	final StoredNewsArticle article = (StoredNewsArticle)obj;
 	base.markAsRead(article);
 	summaryArea.redraw();
 	groupsArea.refresh();
-	try {
-	final StringLoader.Result res = new StringLoader(article.getContent(), "text/html", new URL(article.getUrl())).load();
-	if (res.type() == StringLoader.Result.Type.OK)
+	//	try {
+	    final Properties props = new Properties();
+	    props.setProperty("url", article.getUrl());
+	    final Document doc = docBuilder.buildDoc(article.getContent(), props);
+	if (doc != null)
 	{
-	    final Node root = res.doc.getRoot();
+	    final Node root = doc.getRoot();
 	    root.addSubnode(NodeFactory.newPara(strings.articleUrl(article.getUrl())));
 	    root.addSubnode(NodeFactory.newPara(strings.articleTitle(article.getTitle())));
-	    res.doc.commit();
-	    viewArea.setDocument(res.doc, luwrain.getAreaVisibleWidth(viewArea));
+	    doc.commit();
+	    viewArea.setDocument(doc, luwrain.getAreaVisibleWidth(viewArea));
 	}
+	/*
 	}
 	catch(MalformedURLException e)
 	{
 	    luwrain.message("url", Luwrain.MessageType.ERROR);//FIXME:
 	    return true;
 	}
+	*/
 luwrain.setActiveArea(viewArea);
 	return true;
     }
