@@ -21,7 +21,7 @@ import java.util.*;
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
-import org.luwrain.controls.doc.*;
+import org.luwrain.controls.reader.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.pim.*;
 
@@ -35,7 +35,7 @@ final class App implements Application, MonoApp
 
     private ListArea groupsArea;
     private ListArea summaryArea;
-    private DocumentArea viewArea;
+    private ReaderArea viewArea;
     private AreaLayoutHelper layout = null;
 
     @Override public InitResult onLaunchApp(Luwrain luwrain)
@@ -194,7 +194,7 @@ final class App implements Application, MonoApp
 		}
 	};
 
-	this.viewArea = new DocumentArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.doc.Strings)luwrain.i18n().getStrings(org.luwrain.controls.doc.Strings.NAME))){
+	this.viewArea = new ReaderArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.reader.Strings)luwrain.i18n().getStrings(org.luwrain.controls.reader.Strings.NAME))){
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");

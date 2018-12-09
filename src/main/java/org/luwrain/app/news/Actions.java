@@ -21,8 +21,8 @@ import java.net.*;
 
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
-import org.luwrain.doctree.*;
-import org.luwrain.controls.doc.*;
+import org.luwrain.reader.*;
+import org.luwrain.controls.reader.*;
 import org.luwrain.pim.news.*;
 
 final class Actions
@@ -108,8 +108,7 @@ final class Actions
 	return true;
     }
 
-    boolean onSummaryClick(ListArea summaryArea, ListArea groupsArea,
-DocumentArea viewArea, Object obj)
+    boolean onSummaryClick(ListArea summaryArea, ListArea groupsArea, ReaderArea viewArea, Object obj)
     {
 	NullCheck.notNull(summaryArea, "summaryArea");
 	NullCheck.notNull(groupsArea, "groupsArea");
@@ -187,7 +186,7 @@ luwrain.setActiveArea(viewArea);
 	return true;
     }
 
-    boolean onOpenUrl(DocumentArea area)
+    boolean onOpenUrl(ReaderArea area)
     {
 	NullCheck.notNull(area, "area");
 	final Document doc = area.getDocument();
