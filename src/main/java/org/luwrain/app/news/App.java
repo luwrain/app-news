@@ -194,7 +194,10 @@ final class App implements Application, MonoApp
 		}
 	};
 
-	this.viewArea = new ReaderArea(new DefaultControlEnvironment(luwrain), new Announcement(new DefaultControlEnvironment(luwrain), (org.luwrain.controls.reader.Strings)luwrain.i18n().getStrings(org.luwrain.controls.reader.Strings.NAME))){
+	final ReaderArea.Params viewParams = new ReaderArea.Params();
+	viewParams.context = new DefaultControlContext(luwrain);
+
+	this.viewArea = new ReaderArea(viewParams){
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
