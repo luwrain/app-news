@@ -130,8 +130,8 @@ final class Actions
 	if (doc != null)
 	{
 	    final Node root = doc.getRoot();
-	    root.addSubnode(NodeFactory.newPara(strings.articleUrl(article.getUrl())));
-	    root.addSubnode(NodeFactory.newPara(strings.articleTitle(article.getTitle())));
+	    root.addSubnode(NodeBuilder.newParagraph(strings.articleUrl(article.getUrl())));
+	    root.addSubnode(NodeBuilder.newParagraph(strings.articleTitle(article.getTitle())));
 	    doc.commit();
 	    viewArea.setDocument(doc, luwrain.getAreaVisibleWidth(viewArea));
 	}
