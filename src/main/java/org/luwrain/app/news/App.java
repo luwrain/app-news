@@ -63,7 +63,7 @@ final class App implements Application, MonoApp
     private void createAreas()
     {
 	final ListArea.Params groupsParams = new ListArea.Params();
-	groupsParams.context = new DefaultControlEnvironment(luwrain);
+	groupsParams.context = new DefaultControlContext(luwrain);
 	groupsParams.model = base.newGroupsModel();
 	groupsParams.appearance = new ListUtils.DefaultAppearance(groupsParams.context, Suggestions.CLICKABLE_LIST_ITEM);
 	groupsParams.clickHandler = (area, index, obj)->{
@@ -139,7 +139,7 @@ final class App implements Application, MonoApp
 	    };
 
 	final ListArea.Params summaryParams = new ListArea.Params();
-	summaryParams.context = new DefaultControlEnvironment(luwrain);
+	summaryParams.context = new DefaultControlContext(luwrain);
 	summaryParams.model = base.newArticlesModel();
 	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
 	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj);
@@ -253,7 +253,7 @@ final class App implements Application, MonoApp
 	if (obj == null || !(obj instanceof GroupWrapper))
 	    return false;
 	final GroupWrapper wrapper = (GroupWrapper)obj;
-	final FormArea area = new FormArea(new DefaultControlEnvironment(luwrain), strings.groupPropertiesAreaName(wrapper.group.getName())) {
+	final FormArea area = new FormArea(new DefaultControlContext(luwrain), strings.groupPropertiesAreaName(wrapper.group.getName())) {
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
