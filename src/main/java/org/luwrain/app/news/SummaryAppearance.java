@@ -43,19 +43,19 @@ class SummaryAppearance implements ListArea.Appearance
 	luwrain.playSound(Sounds.LIST_ITEM);
 	if (flags.contains(Flags.BRIEF))
 	{
-	    luwrain.say(article.getTitle());
+	    luwrain.speak(article.getTitle());
 	    return;
 	}
 	switch(article.getState())
 	{
 	case NewsArticle.READ:
-	    luwrain.say(strings.readPrefix() + " " + article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
+	    luwrain.speak(strings.readPrefix() + " " + article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
 	    break;
 	case NewsArticle.MARKED:
-	    luwrain.say(strings.markedPrefix() + " " + article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
+	    luwrain.speak(strings.markedPrefix() + " " + article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
 	    break;
 	default:
-	    luwrain.say(article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
+	    luwrain.speak(article.getTitle() + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate()));
 	}
     }
 
