@@ -303,7 +303,7 @@ final class App implements Application, MonoApp
 			    }
 			    wrapper.group.setOrderIndex(orderIndex);
 			    final List<String> urls = new LinkedList();
-			    for(String s: getMultilineEditTextVec())
+			    for(String s: getMultilineEditLines())
 				if (!s.trim().isEmpty())
 				    urls.add(s.trim());
 			    wrapper.group.setUrls(urls.toArray(new String[urls.size()]));
