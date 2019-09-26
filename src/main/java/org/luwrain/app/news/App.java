@@ -62,33 +62,26 @@ final class App implements Application, MonoApp
 
     private void createAreas()
     {
-	final ListArea.Params groupsParams = new ListArea.Params();
-	groupsParams.context = new DefaultControlContext(luwrain);
-	groupsParams.model = base.newGroupsModel();
-	groupsParams.appearance = new ListUtils.DefaultAppearance(groupsParams.context, Suggestions.CLICKABLE_LIST_ITEM);
-	groupsParams.clickHandler = (area, index, obj)->{
-	    if (!actions.onGroupsClick(summaryArea, obj))
-		return false;
-	    luwrain.setActiveArea(summaryArea);
-	    return true;
-	};
-	groupsParams.name = strings.groupsAreaName();
-	this.groupsArea = new ListArea(groupsParams) {
-		      @Override public boolean onInputEvent(KeyboardEvent event)
-		      {
-			  NullCheck.notNull(event, "event");
-			  if (event.isSpecial() && !event.isModified())
-			      switch(event.getSpecial())
-			      {
-			      case TAB:
-				  luwrain.setActiveArea(summaryArea);
+	this.groupsArea = new ListArea(base.createGroupsListParams((area, index, obj)->{
+		    if (!actions.onGroupsClick(summaryArea, obj))
+			return false;
+		    luwrain.setActiveArea(summaryArea);
+		    return true;
+		})) {
+		@Override public boolean onInputEvent(KeyboardEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    if (event.isSpecial() && !event.isModified())
+			switch(event.getSpecial())
+			{
+			case TAB:
+			    return AreaLayoutHelper.activateNextArea(luwrain, getAreaLayout(), this);
+			case ESCAPE:
+			    closeApp();
 			    return true;
-			      case ESCAPE:
-				  closeApp();
-				  return true;
-			      default:
-				  return super.onInputEvent(event);
-			      }
+			default:
+			    return super.onInputEvent(event);
+			}
 		    return super.onInputEvent(event);
 		}
 		@Override public boolean onSystemEvent(EnvironmentEvent event)
@@ -99,7 +92,7 @@ final class App implements Application, MonoApp
 			{
 			case REFRESH:
 			    if (event.getBroadcastFilterUniRef().startsWith("newsgroup:"))
-			    refresh();
+				refresh();
 			    return true;
 			default:
 			    super.onSystemEvent(event);
@@ -107,18 +100,18 @@ final class App implements Application, MonoApp
 		    switch(event.getCode())
 		    {
 		    case REFRESH:
-				luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
-				return super.onSystemEvent(event);
-							case PROPERTIES:
-			    return showGroupProps();
-						    case ACTION:
-										if (ActionEvent.isAction(event, "fetch"))
-				  return actions.launchNewsFetch();
+			luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
+			return super.onSystemEvent(event);
+		    case PROPERTIES:
+			return showGroupProps();
+		    case ACTION:
+			if (ActionEvent.isAction(event, "fetch"))
+			    return actions.launchNewsFetch();
 			if (ActionEvent.isAction(event, "mark-all-as-read"))
 			    return actions.markAsReadWholeGroup(groupsArea, summaryArea, (GroupWrapper)groupsArea.selected());
-									if (ActionEvent.isAction(event, "add-group"))
+			if (ActionEvent.isAction(event, "add-group"))
 			    return actions.onAddGroup(groupsArea);
-						if (ActionEvent.isAction(event, "delete-group"))
+			if (ActionEvent.isAction(event, "delete-group"))
 			    return actions.onDeleteGroup(groupsArea);
 			if (ActionEvent.isAction(event, "show-with-read-only"))
 			    return actions.setShowAllGroupsMode(groupsArea, true);
@@ -132,13 +125,13 @@ final class App implements Application, MonoApp
 			return super.onSystemEvent(event);
 		    }
 		}
-		      @Override public Action[] getAreaActions()
-		      {
-			  return actionLists.getGroupsActions(this);
-		      }
+		@Override public Action[] getAreaActions()
+		{
+		    return actionLists.getGroupsActions(this);
+		}
 	    };
 
-this.summaryArea = new ListArea(base.createSummaryParams((area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj))) {
+	this.summaryArea = new ListArea(base.createSummaryParams((area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj))) {
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
@@ -146,11 +139,9 @@ this.summaryArea = new ListArea(base.createSummaryParams((area, index, obj)->act
 			switch(event.getSpecial())
 			{
 			case TAB:
-			    luwrain.setActiveArea(viewArea);
-			    return true;
+			    return AreaLayoutHelper.activateNextArea(luwrain, getAreaLayout(), this);
 			case BACKSPACE:
-			    luwrain.setActiveArea(groupsArea);
-			    return true;
+			    return AreaLayoutHelper.activatePrevArea(luwrain, getAreaLayout(), this);
 			case ESCAPE:
 			    closeApp();
 			    return true;
@@ -185,11 +176,10 @@ this.summaryArea = new ListArea(base.createSummaryParams((area, index, obj)->act
 		{
 		    return actionLists.getSummaryActions(this);
 		}
-	};
+	    };
 
 	final ReaderArea.Params viewParams = new ReaderArea.Params();
 	viewParams.context = new DefaultControlContext(luwrain);
-
 	this.viewArea = new ReaderArea(viewParams){
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
@@ -200,11 +190,9 @@ this.summaryArea = new ListArea(base.createSummaryParams((area, index, obj)->act
 			case ENTER:
 			    return actions.onOpenUrl(this);
 			case TAB:
-			    luwrain.setActiveArea(groupsArea);
-			    return true;
+			    return AreaLayoutHelper.activateNextArea(luwrain, getAreaLayout(), this);
 			case BACKSPACE:
-			    luwrain.setActiveArea(summaryArea);
-			    return true;
+			    return AreaLayoutHelper.activatePrevArea(luwrain, getAreaLayout(), this);
 			case ESCAPE:
 			    closeApp();
 			    return true;

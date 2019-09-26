@@ -36,7 +36,7 @@ final NewsStoring storing;
     private StoredNewsArticle[] articles = new StoredNewsArticle[0];
     private boolean showAllGroups = false;
 
-Base(Luwrain luwrain, Strings strings)
+    Base(Luwrain luwrain, Strings strings)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(strings, "strings");
@@ -66,19 +66,9 @@ Base(Luwrain luwrain, Strings strings)
 	articles = new StoredNewsArticle[0];
     }
 
-    NewsStoring getStoring()
-    {
-	return storing;
-    }
-
     void setShowAllGroups(boolean value)
     {
 	this.showAllGroups = value;
-    }
-
-    SummaryAppearance getSummaryAppearance()
-    {
-	return summaryAppearance;
     }
 
     boolean markAsRead(StoredNewsArticle article)
@@ -180,9 +170,16 @@ void loadArticles()
 	}
     }
 
-    ListArea.Model newGroupsModel()
+    ListArea.Params createGroupsListParams(ListArea.ClickHandler clickHandler)
     {
-	return new GroupsModel();
+	NullCheck.notNull(clickHandler, "clickHandler");
+	final ListArea.Params params = new ListArea.Params();
+	params.context = new DefaultControlContext(luwrain);
+	params.model = new GroupsModel();
+	params.appearance = new ListUtils.DefaultAppearance(params.context, Suggestions.CLICKABLE_LIST_ITEM);
+	params.clickHandler = clickHandler;
+	params.name = strings.groupsAreaName();
+	return params;
     }
 
     ListArea.Params createSummaryParams(ListArea.ClickHandler clickHandler)
