@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -19,28 +19,16 @@ package org.luwrain.app.news;
 import org.luwrain.base.*;
 import org.luwrain.core.*;
 
-public class Extension extends org.luwrain.core.extensions.EmptyExtension
+public final class Extension extends org.luwrain.core.extensions.EmptyExtension
 {
     @Override public Command[] getCommands(Luwrain luwrain)
     {
-	return new Command[]{
-	    new Command(){
-		@Override public String getName()
-		{
-		    return "news";
-		}
-		@Override public void onCommand(Luwrain luwrain)
-		{
-		    luwrain.launchApp("news");
-		}
-	    }};
+	return new Command[]{new SimpleShortcutCommand("news")};
     }
 
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	return new ExtensionObject[]{
-	    
-
 	    new Shortcut() {
 		@Override public String getExtObjName()
 		{
@@ -52,7 +40,6 @@ public class Extension extends org.luwrain.core.extensions.EmptyExtension
 		    return new Application[]{new App()};
 		}
 	    },
-
 	};
     }
 }

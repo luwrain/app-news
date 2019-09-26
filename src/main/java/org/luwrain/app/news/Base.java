@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -47,7 +47,7 @@ Base(Luwrain luwrain, Strings strings)
 	if (storing == null)
 	    return;
 	loadGroups();
-	summaryAppearance = new SummaryAppearance(luwrain, strings);
+	summaryAppearance = new SummaryAppearance();
     }
 
     boolean openGroup(StoredNewsGroup newGroup)
@@ -185,12 +185,20 @@ void loadArticles()
 	return new GroupsModel();
     }
 
-    ListArea.Model newArticlesModel()
+    ListArea.Params createSummaryParams(ListArea.ClickHandler clickHandler)
     {
-	return new SummaryModel();
+	NullCheck.notNull(clickHandler, "clickHandler");
+	final ListArea.Params params = new ListArea.Params();
+	params.context = new DefaultControlContext(luwrain);
+	params.model = new SummaryModel();
+	params.appearance = new SummaryAppearance();
+	params.clickHandler = clickHandler;
+	params.name = strings.summaryAreaName();
+	params.flags.add(ListArea.Flags.AREA_ANNOUNCE_SELECTED);
+	return params;
     }
 
-    private class GroupsModel implements ListArea.Model
+    private final class GroupsModel implements ListArea.Model
 {
     @Override public int getItemCount()
     {
@@ -208,7 +216,7 @@ void loadArticles()
     }
 }
 
-    private class SummaryModel implements ListArea.Model
+    private final class SummaryModel implements ListArea.Model
 {
     @Override public int getItemCount()
     {
@@ -225,4 +233,59 @@ void loadArticles()
 	loadArticles();
     }
 }
+
+    private final class SummaryAppearance implements ListArea.Appearance
+    {
+	@Override public void announceItem(Object item, Set<Flags> flags)
+	{
+	    NullCheck.notNull(item, "item");
+	    NullCheck.notNull(flags, "flags");
+	    final StoredNewsArticle article = (StoredNewsArticle)item;
+	    final String title = luwrain.getSpeakableText(article.getTitle(), Luwrain.SpeakableTextType.NATURAL);
+	    if (flags.contains(Flags.BRIEF))
+	    {
+		luwrain.setEventResponse(DefaultEventResponse.text(Sounds.LIST_ITEM, title));
+		return;
+	    }
+	    switch(article.getState())
+	    {
+	    case NewsArticle.READ:
+		luwrain.setEventResponse(DefaultEventResponse.text(Sounds.LIST_ITEM, strings.readPrefix() + " " + title + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate())));
+		break;
+	    case NewsArticle.MARKED:
+		luwrain.setEventResponse(DefaultEventResponse.text(strings.markedPrefix() + " " + title + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate())));
+		break;
+	    default:
+		luwrain.setEventResponse(DefaultEventResponse.text(Sounds.LIST_ITEM, title + " " + luwrain.i18n().getPastTimeBrief(article.getPublishedDate())));
+	    }
+	}
+	@Override public String getScreenAppearance(Object item, Set<Flags> flags)
+	{
+	    NullCheck.notNull(item, "item");
+	    NullCheck.notNull(flags, "flags");
+	    final StoredNewsArticle article = (StoredNewsArticle)item;
+	    switch(article.getState())
+	    {
+	    case NewsArticle.NEW:
+		return " [" + article.getTitle() + "]";
+	    case NewsArticle.MARKED:
+		return "* " + article.getTitle();
+	    default:
+		return "  " + article.getTitle();
+	    }
+	}
+	@Override public int getObservableLeftBound(Object item)
+	{
+	    if (item == null || !(item instanceof StoredNewsArticle))
+		return 0;
+	    return 2;
+	}
+	@Override public int getObservableRightBound(Object item)
+	{
+	    if (item == null || !(item instanceof StoredNewsArticle))
+		return 0;
+	    final StoredNewsArticle article = (StoredNewsArticle)item;
+	    return article.getTitle().length() + 2;
+	}
+    }
 }

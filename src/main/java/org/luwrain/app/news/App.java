@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -138,14 +138,7 @@ final class App implements Application, MonoApp
 		      }
 	    };
 
-	final ListArea.Params summaryParams = new ListArea.Params();
-	summaryParams.context = new DefaultControlContext(luwrain);
-	summaryParams.model = base.newArticlesModel();
-	summaryParams.appearance = new SummaryAppearance(luwrain, strings);
-	summaryParams.clickHandler = (area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj);
-	summaryParams.name = strings.summaryAreaName();
-	summaryParams.flags.add(ListArea.Flags.AREA_ANNOUNCE_SELECTED);
-	this.summaryArea = new ListArea(summaryParams) {
+this.summaryArea = new ListArea(base.createSummaryParams((area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj))) {
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");

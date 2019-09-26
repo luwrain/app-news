@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -37,6 +37,6 @@ final class GroupWrapper
 	    return "";
 	if (newArticleCount == 0)
 	    return group.getName();
-	return group.getName() + " (" + newArticleCount + ")";
+	return group.getName() + " (" + String.valueOf(newArticleCount) + ")";
     }
 }
