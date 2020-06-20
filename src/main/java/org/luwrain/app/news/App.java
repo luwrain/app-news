@@ -25,7 +25,7 @@ import org.luwrain.controls.reader.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.pim.*;
 
-final class App implements Application, MonoApp
+public final class App implements Application, MonoApp
 {
     private Luwrain luwrain = null;
     private Strings strings = null;

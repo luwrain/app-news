@@ -28,18 +28,6 @@ public final class Extension extends org.luwrain.core.extensions.EmptyExtension
 
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
-	return new ExtensionObject[]{
-	    new Shortcut() {
-		@Override public String getExtObjName()
-		{
-		    return "news";
-		}
-		@Override public Application[] prepareApp(String[] args)
-		{
-		    NullCheck.notNullItems(args, "args");
-		    return new Application[]{new App()};
-		}
-	    },
-	};
+	return new ExtensionObject[]{ new SimpleShortcut("news", App.class) };
     }
 }
