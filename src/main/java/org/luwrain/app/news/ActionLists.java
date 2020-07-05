@@ -34,18 +34,18 @@ final class ActionLists
     {
 	if (groupsArea.selectedIndex() < 0)
 	    return new Action[]{
-		new Action("add-group", strings.actionAddGroup(), new KeyboardEvent(KeyboardEvent.Special.INSERT)),
-		new Action("show-with-read-only", strings.actionShowWithReadOnly(), new KeyboardEvent('=')),
-		new Action("hide-with-read-only", strings.actionHideWithReadOnly(), new KeyboardEvent('-')),
-		new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
+		new Action("add-group", strings.actionAddGroup(), new InputEvent(InputEvent.Special.INSERT)),
+		new Action("show-with-read-only", strings.actionShowWithReadOnly(), new InputEvent('=')),
+		new Action("hide-with-read-only", strings.actionHideWithReadOnly(), new InputEvent('-')),
+		new Action("fetch", strings.actionFetch(), new InputEvent(InputEvent.Special.F9)),
 	    };
 	return new Action[]{
-	    new Action("add-group", strings.actionAddGroup(), new KeyboardEvent(KeyboardEvent.Special.INSERT)),
-	    new Action("delete-group", strings.actionDeleteGroup(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
-	    new Action("mark-all-as-read", strings.actionMarkAllAsRead()/*, new KeyboardEvent(KeyboardEvent.Special.DELETE)*/), //FIXME: shift+delete
-	    new Action("show-with-read-only", strings.actionShowWithReadOnly(), new KeyboardEvent('=')),
-	    new Action("hide-with-read-only", strings.actionHideWithReadOnly(), new KeyboardEvent('-')),
-	    new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
+	    new Action("add-group", strings.actionAddGroup(), new InputEvent(InputEvent.Special.INSERT)),
+	    new Action("delete-group", strings.actionDeleteGroup(), new InputEvent(InputEvent.Special.DELETE)),
+	    new Action("mark-all-as-read", strings.actionMarkAllAsRead()/*, new InputEvent(InputEvent.Special.DELETE)*/), //FIXME: shift+delete
+	    new Action("show-with-read-only", strings.actionShowWithReadOnly(), new InputEvent('=')),
+	    new Action("hide-with-read-only", strings.actionHideWithReadOnly(), new InputEvent('-')),
+	    new Action("fetch", strings.actionFetch(), new InputEvent(InputEvent.Special.F9)),
 	};
     }
 
@@ -53,10 +53,10 @@ Action[] getSummaryActions(ListArea summaryArea)
     {
 	if (summaryArea.selectedIndex() < 0)
 	    return new Action[]{
-			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
+			      new Action("fetch", strings.actionFetch(), new InputEvent(InputEvent.Special.F9)),
 			  };
 	    return new Action[]{
-			      new Action("fetch", strings.actionFetch(), new KeyboardEvent(KeyboardEvent.Special.F9)),
+			      new Action("fetch", strings.actionFetch(), new InputEvent(InputEvent.Special.F9)),
 			      new Action("read-article", strings.actionReadArticle()),
 			      new Action("mark-article", strings.actionMarkArticle()),
 			      new Action("unmark-article", strings.actionUnmarkArticle()),

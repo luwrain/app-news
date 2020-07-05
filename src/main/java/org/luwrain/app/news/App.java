@@ -68,7 +68,7 @@ public final class App implements Application, MonoApp
 		    luwrain.setActiveArea(summaryArea);
 		    return true;
 		})) {
-		@Override public boolean onInputEvent(KeyboardEvent event)
+		@Override public boolean onInputEvent(InputEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())
@@ -132,7 +132,7 @@ public final class App implements Application, MonoApp
 	    };
 
 	this.summaryArea = new ListArea(base.createSummaryParams((area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj))) {
-		@Override public boolean onInputEvent(KeyboardEvent event)
+		@Override public boolean onInputEvent(InputEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())
@@ -181,7 +181,7 @@ public final class App implements Application, MonoApp
 	final ReaderArea.Params viewParams = new ReaderArea.Params();
 	viewParams.context = new DefaultControlContext(luwrain);
 	this.viewArea = new ReaderArea(viewParams){
-		@Override public boolean onInputEvent(KeyboardEvent event)
+		@Override public boolean onInputEvent(InputEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())
@@ -235,7 +235,7 @@ public final class App implements Application, MonoApp
 	    return false;
 	final GroupWrapper wrapper = (GroupWrapper)obj;
 	final FormArea area = new FormArea(new DefaultControlContext(luwrain), strings.groupPropertiesAreaName(wrapper.group.getName())) {
-		@Override public boolean onInputEvent(KeyboardEvent event)
+		@Override public boolean onInputEvent(InputEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())
