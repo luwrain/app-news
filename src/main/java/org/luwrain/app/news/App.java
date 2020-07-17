@@ -84,10 +84,10 @@ public final class App implements Application, MonoApp
 			}
 		    return super.onInputEvent(event);
 		}
-		@Override public boolean onSystemEvent(EnvironmentEvent event)
+		@Override public boolean onSystemEvent(SystemEvent event)
 		{
 		    NullCheck.notNull(event, "event");
-		    if (event.getType() == EnvironmentEvent.Type.BROADCAST)
+		    if (event.getType() == SystemEvent.Type.BROADCAST)
 			switch(event.getCode())
 			{
 			case REFRESH:
@@ -156,10 +156,10 @@ public final class App implements Application, MonoApp
 			}
 		    return super.onInputEvent(event);
 		}
-		@Override public boolean onSystemEvent(EnvironmentEvent event)
+		@Override public boolean onSystemEvent(SystemEvent event)
 		{
 		    NullCheck.notNull(event, "event");
-		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
+		    if (event.getType() != SystemEvent.Type.REGULAR)
 			return super.onSystemEvent(event);
 		    switch(event.getCode())
 		    {
@@ -199,10 +199,10 @@ public final class App implements Application, MonoApp
 			}
 		    return super.onInputEvent(event);
 		}
-		@Override public boolean onSystemEvent(EnvironmentEvent event)
+		@Override public boolean onSystemEvent(SystemEvent event)
 		{
 		    NullCheck.notNull(event, "event");
-		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
+		    if (event.getType() != SystemEvent.Type.REGULAR)
 			return super.onSystemEvent(event);
 		    switch(event.getCode())
 		    {
@@ -222,7 +222,7 @@ public final class App implements Application, MonoApp
 	    };
     }
 
-    private boolean onSummaryAreaAction(EnvironmentEvent event)
+    private boolean onSummaryAreaAction(SystemEvent event)
     {
 	NullCheck.notNull(event, "event");
 	return false;
@@ -247,10 +247,10 @@ public final class App implements Application, MonoApp
 			}
 		    return super.onInputEvent(event);
 		}
-		@Override public boolean onSystemEvent(EnvironmentEvent event)
+		@Override public boolean onSystemEvent(SystemEvent event)
 		{
 		    NullCheck.notNull(event, "event");
-		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
+		    if (event.getType() != SystemEvent.Type.REGULAR)
 			return super.onSystemEvent(event);
 		    switch(event.getCode())
 		    {
