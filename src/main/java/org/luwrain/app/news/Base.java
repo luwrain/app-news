@@ -76,7 +76,10 @@ final NewsStoring storing;
 	NullCheck.notNull(article, "article");
 	try {
 	    if (article.getState() == NewsArticle.NEW)
+	    {
 		article.setState(NewsArticle.READ);
+		article.save();
+	    }
 	    return true;
 	}
 	catch (Exception e)
@@ -96,7 +99,10 @@ final NewsStoring storing;
 		return true;
 	    for(StoredNewsArticle a: articles)
 		if (a.getState() == NewsArticle.NEW)
+		{
 		    a.setState(NewsArticle.READ);
+		    a.save();
+		}
 	    return true;
 	}
 	catch (PimException e)
@@ -116,6 +122,7 @@ index < 0 || index >= articles.length)
 	    if (article.getState() == NewsArticle.MARKED)
 		article.setState(NewsArticle.READ); else
 		article.setState(NewsArticle.MARKED);
+	    article.save();
 	return true;
 	}
 	catch (PimException e)
