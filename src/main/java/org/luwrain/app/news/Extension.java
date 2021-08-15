@@ -16,10 +16,9 @@
 
 package org.luwrain.app.news;
 
-import org.luwrain.base.*;
 import org.luwrain.core.*;
 
-public final class Extension extends org.luwrain.core.extensions.EmptyExtension
+public final class Extension extends EmptyExtension
 {
     @Override public Command[] getCommands(Luwrain luwrain)
     {
