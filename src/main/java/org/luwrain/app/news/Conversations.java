@@ -42,7 +42,7 @@ final class Conversations
 
     String newGroupName()
     {
-	final String res = Popups.simple(luwrain, strings.groupAddingPopupName(), strings.groupAddingPopupPrefix(), "", (line)->{
+	final String res = Popups.text(luwrain, strings.groupAddingPopupName(), strings.groupAddingPopupPrefix(), "", (line)->{
 		if (line.trim().isEmpty())
 		{
 		    luwrain.message(strings.groupAddingNameMayNotBeEmpty(), Luwrain.MessageType.ERROR);
