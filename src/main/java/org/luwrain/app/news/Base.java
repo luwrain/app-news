@@ -238,7 +238,7 @@ void loadArticles()
     }
 }
 
-    private final class SummaryAppearance implements ListArea.Appearance
+    private final class SummaryAppearance implements ListArea.Appearance<Object>
     {
 	@Override public void announceItem(Object item, Set<Flags> flags)
 	{
