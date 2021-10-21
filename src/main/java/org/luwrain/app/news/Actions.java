@@ -48,7 +48,7 @@ final class Actions
 	if (name == null)
 	    return false;
 	final NewsGroup group = new NewsGroup();
-	group.name = name;
+	group.setName(name);
 	try {
 	    base.storing.getGroups().save(group);
 	}
@@ -89,9 +89,9 @@ final class Actions
 	NullCheck.notNull(groupsArea, "groupsArea");
 	NullCheck.notNull(summaryArea, "summaryArea");
 	final Object obj = summaryArea.selected();
-	if (obj == null || !(obj instanceof StoredNewsArticle))
+	if (obj == null || !(obj instanceof NewsArticle))
 	    return false;
-	if (!base.markAsRead((StoredNewsArticle)obj))
+	if (!base.markAsRead((NewsArticle)obj))
 	    return false;
 	summaryArea.redraw();
 	groupsArea.refresh();
@@ -114,12 +114,12 @@ final class Actions
 	NullCheck.notNull(groupsArea, "groupsArea");
 	NullCheck.notNull(viewArea, "viewArea");
 	NullCheck.notNull(obj, "obj");
-	if (!(obj instanceof StoredNewsArticle))
+	if (!(obj instanceof NewsArticle))
 	    return false;
 	final DocumentBuilder docBuilder = new DocumentBuilderLoader().newDocumentBuilder(luwrain, ContentTypes.TEXT_HTML_DEFAULT);
 	if (docBuilder == null)
 	    return false;
-	final StoredNewsArticle article = (StoredNewsArticle)obj;
+	final NewsArticle article = (NewsArticle)obj;
 	base.markAsRead(article);
 	summaryArea.redraw();
 	groupsArea.refresh();

@@ -287,7 +287,8 @@ public final class App implements Application, MonoApp
 			    for(String s: getMultilineEditLines())
 				if (!s.trim().isEmpty())
 				    urls.add(s.trim());
-			    wrapper.group.setUrls(urls.toArray(new String[urls.size()]));
+			    wrapper.group.setUrls(urls);
+			    wrapper.group.save();
 			    groupsArea.refresh();
 			    layout.closeTempLayout();
 			    return true;
@@ -305,11 +306,11 @@ public final class App implements Application, MonoApp
 		    }
 		}
 	    };
-	final String[] urls = wrapper.group.getUrls();
+	final List<String> urls = wrapper.group.getUrls();
 	final String[] urlLines;
-	if (urls.length != 0)
+	if (urls != null && !urls.isEmpty())
 	{
-	    final List<String> res = new LinkedList();
+	    final List<String> res = new ArrayList<>();
 	    for(String s: urls)
 		res.add(s);
 	    res.add("");

@@ -21,10 +21,10 @@ import org.luwrain.pim.news.*;
 
 final class GroupWrapper
 {
-    final StoredNewsGroup group;
+    final NewsGroup group;
     final int newArticleCount;
 
-    GroupWrapper(StoredNewsGroup group, int newArticleCount)
+    GroupWrapper(NewsGroup group, int newArticleCount)
     {
 	NullCheck.notNull(group, "group");
 	this.group = group;

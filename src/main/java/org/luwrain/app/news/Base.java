@@ -32,8 +32,8 @@ final NewsStoring storing;
     private SummaryAppearance summaryAppearance;
 
     private GroupWrapper[] groups = new GroupWrapper[0];
-    private StoredNewsGroup group = null;
-    private StoredNewsArticle[] articles = new StoredNewsArticle[0];
+    private NewsGroup group = null;
+    private NewsArticle[] articles = new NewsArticle[0];
     private boolean showAllGroups = false;
 
     Base(Luwrain luwrain, Strings strings)
@@ -50,7 +50,7 @@ final NewsStoring storing;
 	summaryAppearance = new SummaryAppearance();
     }
 
-    boolean openGroup(StoredNewsGroup newGroup)
+    boolean openGroup(NewsGroup newGroup)
     {
 	NullCheck.notNull(newGroup, "newGroup");
 	if (this.group != null && this.group == newGroup)
@@ -63,7 +63,7 @@ final NewsStoring storing;
     void closeGroup()
     {
 	group = null;
-	articles = new StoredNewsArticle[0];
+	articles = new NewsArticle[0];
     }
 
     void setShowAllGroups(boolean value)
@@ -71,7 +71,7 @@ final NewsStoring storing;
 	this.showAllGroups = value;
     }
 
-    boolean markAsRead(StoredNewsArticle article)
+    boolean markAsRead(NewsArticle article)
     {
 	NullCheck.notNull(article, "article");
 	try {
@@ -89,15 +89,15 @@ final NewsStoring storing;
 	}
     }
 
-    boolean markAsReadWholeGroup(StoredNewsGroup group)
+    boolean markAsReadWholeGroup(NewsGroup group)
     {
 	NullCheck.notNull(group, "group");
 	try {
-	    StoredNewsArticle articles[];
+	    NewsArticle articles[];
 	    articles = storing.getArticles().loadWithoutRead(group);
 	    if (articles == null || articles.length < 1)
 		return true;
-	    for(StoredNewsArticle a: articles)
+	    for(NewsArticle a: articles)
 		if (a.getState() == NewsArticle.NEW)
 		{
 		    a.setState(NewsArticle.READ);
@@ -117,7 +117,7 @@ boolean toggleArticleMark(int index)
 	if (articles == null || 
 index < 0 || index >= articles.length)
 	    return false;
-	final StoredNewsArticle article = articles[index];
+	final NewsArticle article = articles[index];
 	try {
 	    if (article.getState() == NewsArticle.MARKED)
 		article.setState(NewsArticle.READ); else
@@ -136,7 +136,7 @@ index < 0 || index >= articles.length)
     {
 	try {
 	    final List<GroupWrapper> w = new LinkedList();
-	    final StoredNewsGroup[] g = storing.getGroups().load();
+	    final NewsGroup[] g = storing.getGroups().load();
 	    Arrays.sort(g);
 	    int[] newCounts = storing.getArticles().countNewInGroups(g);
 	    int[] markedCounts = storing.getArticles().countMarkedInGroups(g);
@@ -160,7 +160,7 @@ void loadArticles()
     {
 	if (group == null)
 	{
-	    articles = new StoredNewsArticle[0];
+	    articles = new NewsArticle[0];
 	    return;
 	}
 	try {
@@ -173,7 +173,7 @@ void loadArticles()
 	catch(PimException e)
 	{
 	    luwrain.crash(e);
-	    articles = new StoredNewsArticle[0];
+	    articles = new NewsArticle[0];
 	}
     }
 
@@ -244,7 +244,7 @@ void loadArticles()
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    final StoredNewsArticle article = (StoredNewsArticle)item;
+	    final NewsArticle article = (NewsArticle)item;
 	    final String title = luwrain.getSpeakableText(article.getTitle(), Luwrain.SpeakableTextType.NATURAL);
 	    if (flags.contains(Flags.BRIEF))
 	    {
@@ -267,7 +267,7 @@ void loadArticles()
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    final StoredNewsArticle article = (StoredNewsArticle)item;
+	    final NewsArticle article = (NewsArticle)item;
 	    switch(article.getState())
 	    {
 	    case NewsArticle.NEW:
@@ -280,15 +280,15 @@ void loadArticles()
 	}
 	@Override public int getObservableLeftBound(Object item)
 	{
-	    if (item == null || !(item instanceof StoredNewsArticle))
+	    if (item == null || !(item instanceof NewsArticle))
 		return 0;
 	    return 2;
 	}
 	@Override public int getObservableRightBound(Object item)
 	{
-	    if (item == null || !(item instanceof StoredNewsArticle))
+	    if (item == null || !(item instanceof NewsArticle))
 		return 0;
-	    final StoredNewsArticle article = (StoredNewsArticle)item;
+	    final NewsArticle article = (NewsArticle)item;
 	    return article.getTitle().length() + 2;
 	}
     }
