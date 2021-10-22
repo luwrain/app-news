@@ -44,27 +44,20 @@ public final class App extends AppBase<Strings> implements MonoApp
 
     void loadGroups()
     {
-	try {
-	    final List<GroupWrapper> w = new LinkedList();
-	    final NewsGroup[] g = storing.getGroups().load();
-	    Arrays.sort(g);
-	    int[] newCounts = storing.getArticles().countNewInGroups(g);
-	    int[] markedCounts = storing.getArticles().countMarkedInGroups(g);
-	    for(int i = 0;i < g.length;++i)
-	    {
-		final int newCount = i < newCounts.length?newCounts[i]:0;
-		final int markedCount = i < markedCounts.length?markedCounts[i]:0;
-		if (showAllGroups || newCount > 0 || markedCount > 0)
-		    w.add(new GroupWrapper(g[i], newCount));
-	    }
-	    this.groups.clear();
-	    this.groups.addAll(w);
-	}
-	catch(PimException e)
+	final List<GroupWrapper> w = new LinkedList();
+	final NewsGroup[] g = storing.getGroups().load();
+	Arrays.sort(g);
+	int[] newCounts = storing.getArticles().countNewInGroups(g);
+	int[] markedCounts = storing.getArticles().countMarkedInGroups(g);
+	for(int i = 0;i < g.length;++i)
 	{
-	    this.groups.clear();
-	    crash(e);
+	    final int newCount = i < newCounts.length?newCounts[i]:0;
+	    final int markedCount = i < markedCounts.length?markedCounts[i]:0;
+	    if (showAllGroups || newCount > 0 || markedCount > 0)
+		w.add(new GroupWrapper(g[i], newCount));
 	}
+	this.groups.clear();
+	this.groups.addAll(w);
     }
 
     void loadArticles()
