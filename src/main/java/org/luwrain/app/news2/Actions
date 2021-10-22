@@ -141,20 +141,6 @@ luwrain.setActiveArea(viewArea);
 	return true;
     }
 
-    boolean onGroupsClick(ListArea summaryArea, Object obj)
-    {
-	NullCheck.notNull(summaryArea, "summaryArea");
-	NullCheck.notNull(obj, "obj");
-	if (!(obj instanceof GroupWrapper))
-	    return false;
-	final GroupWrapper group = (GroupWrapper)obj;
-	if (base.openGroup(group.group))
-	{
-	    summaryArea.redraw(); 
-	    summaryArea.resetHotPoint();
-	}
-	return true;
-    }
 
     boolean markAsReadWholeGroup(ListArea groupsArea, ListArea summaryArea, GroupWrapper group)
     {

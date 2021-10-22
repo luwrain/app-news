@@ -9,324 +9,92 @@ import org.luwrain.controls.*;
 import org.luwrain.controls.reader.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.pim.*;
+import org.luwrain.app.base.*;
 
-public final class App implements Application, MonoApp
+public final class App extends AppBase<Strings> implements MonoApp
 {
-    private Luwrain luwrain = null;
-    private Strings strings = null;
-    private Base base = null;
-    private Actions actions = null;
-    private ActionLists actionLists = null;
+    private NewsStoring storing = null;
+    private MainLayout mainLayout = null;
+    private NewsGroup group = null;
+    private boolean showAllGroups = false;
 
-    private ListArea groupsArea;
-    private ListArea summaryArea;
-    private ReaderArea viewArea;
-    private AreaLayoutHelper layout = null;
+    final List<GroupWrapper> groups = new ArrayList<>();
+    final List<NewsArticle> articles = new ArrayList<>();
 
-    @Override public InitResult onLaunchApp(Luwrain luwrain)
+    public App() { super(Strings.NAME, Strings.class, "luwrain.news"); }
+
+    @Override public AreaLayout onAppInit()
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	final Object o = luwrain.i18n().getStrings(Strings.NAME);
-	if (o == null || !(o instanceof Strings))
-	    return new InitResult(InitResult.Type.NO_STRINGS_OBJ, Strings.NAME);
-	this.strings = (Strings)o;
-	this.luwrain = luwrain;
-	this.base = new Base(luwrain, strings);
-	if (base.storing == null)
-	    return new InitResult(InitResult.Type.FAILURE);
-	this.actions = new Actions(luwrain, strings, base);
-	this.actionLists = new ActionLists(strings);
-	createAreas();
-	this.layout = new AreaLayoutHelper(()->{
-		luwrain.onNewAreaLayout();
-		luwrain.announceActiveArea();
-	    }, new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, groupsArea, summaryArea, viewArea));
-	luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
-	return new InitResult();
+	this.storing = org.luwrain.pim.Connections.getNewsStoring(getLuwrain(), true);
+	if (storing == null)
+	    return null;
+	loadGroups();
+	return this.mainLayout.getAreaLayout();
     }
 
-    private void createAreas()
+        boolean openGroup(NewsGroup newGroup)
     {
-	this.groupsArea = new ListArea(base.createGroupsListParams((area, index, obj)->{
-		    if (!actions.onGroupsClick(summaryArea, obj))
-			return false;
-		    luwrain.setActiveArea(summaryArea);
-		    return true;
-		})) {
-		@Override public boolean onInputEvent(InputEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.isSpecial() && !event.isModified())
-			switch(event.getSpecial())
-			{
-			case TAB:
-			    return AreaLayoutHelper.activateNextArea(luwrain, getAreaLayout(), this);
-			case ESCAPE:
-			    closeApp();
-			    return true;
-			default:
-			    return super.onInputEvent(event);
-			}
-		    return super.onInputEvent(event);
-		}
-		@Override public boolean onSystemEvent(SystemEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.getType() == SystemEvent.Type.BROADCAST)
-			switch(event.getCode())
-			{
-			case REFRESH:
-			    if (event.getBroadcastFilterUniRef().startsWith("newsgroup:"))
-				refresh();
-			    return true;
-			default:
-			    super.onSystemEvent(event);
-			}
-		    switch(event.getCode())
-		    {
-		    case REFRESH:
-			luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
-			return super.onSystemEvent(event);
-		    case PROPERTIES:
-			return showGroupProps();
-		    case ACTION:
-			if (ActionEvent.isAction(event, "fetch"))
-			    return actions.launchNewsFetch();
-			if (ActionEvent.isAction(event, "mark-all-as-read"))
-			    return actions.markAsReadWholeGroup(groupsArea, summaryArea, (GroupWrapper)groupsArea.selected());
-			if (ActionEvent.isAction(event, "add-group"))
-			    return actions.onAddGroup(groupsArea);
-			if (ActionEvent.isAction(event, "delete-group"))
-			    return actions.onDeleteGroup(groupsArea);
-			if (ActionEvent.isAction(event, "show-with-read-only"))
-			    return actions.setShowAllGroupsMode(groupsArea, true);
-			if (ActionEvent.isAction(event, "hide-with-read-only"))
-			    return actions.setShowAllGroupsMode(groupsArea, false);
-			return false;
-		    case CLOSE:
-			closeApp();
-			return true;
-		    default:
-			return super.onSystemEvent(event);
-		    }
-		}
-		@Override public Action[] getAreaActions()
-		{
-		    return actionLists.getGroupsActions(this);
-		}
-	    };
-
-	this.summaryArea = new ListArea(base.createSummaryParams((area, index, obj)->actions.onSummaryClick(summaryArea, groupsArea, viewArea, obj))) {
-		@Override public boolean onInputEvent(InputEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.isSpecial() && !event.isModified())
-			switch(event.getSpecial())
-			{
-			case TAB:
-			    return AreaLayoutHelper.activateNextArea(luwrain, getAreaLayout(), this);
-			case BACKSPACE:
-			    return AreaLayoutHelper.activatePrevArea(luwrain, getAreaLayout(), this);
-			case ESCAPE:
-			    closeApp();
-			    return true;
-			case F9:
-			    return actions.launchNewsFetch();
-			}
-		    if (!event.isSpecial() && !event.isModified())
-			switch (event.getChar())
-			{
-			case ' ':
-			    return actions.onSummarySpace(groupsArea, summaryArea);
-			}
-		    return super.onInputEvent(event);
-		}
-		@Override public boolean onSystemEvent(SystemEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.getType() != SystemEvent.Type.REGULAR)
-			return super.onSystemEvent(event);
-		    switch(event.getCode())
-		    {
-		    case ACTION:
-			return onSummaryAreaAction(event);
-		    case CLOSE:
-			closeApp();
-			return true;
-		    default:
-			return super.onSystemEvent(event);
-		    }
-		}
-		@Override public Action[] getAreaActions()
-		{
-		    return actionLists.getSummaryActions(this);
-		}
-	    };
-
-	final ReaderArea.Params viewParams = new ReaderArea.Params();
-	viewParams.context = new DefaultControlContext(luwrain);
-	this.viewArea = new ReaderArea(viewParams){
-		@Override public boolean onInputEvent(InputEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.isSpecial() && !event.isModified())
-			switch(event.getSpecial())
-			{
-			case ENTER:
-			    return actions.onOpenUrl(this);
-			case TAB:
-			    return AreaLayoutHelper.activateNextArea(luwrain, getAreaLayout(), this);
-			case BACKSPACE:
-			    return AreaLayoutHelper.activatePrevArea(luwrain, getAreaLayout(), this);
-			case ESCAPE:
-			    closeApp();
-			    return true;
-			}
-		    return super.onInputEvent(event);
-		}
-		@Override public boolean onSystemEvent(SystemEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.getType() != SystemEvent.Type.REGULAR)
-			return super.onSystemEvent(event);
-		    switch(event.getCode())
-		    {
-		    case OK:
-			return actions.onOpenUrl(this);
-		    case CLOSE:
-			closeApp();
-			return true;
-		    default:
-			return super.onSystemEvent(event);
-		    }
-		}
-		@Override public String getAreaName()
-		{
-		    return strings.viewAreaName();
-		}
-	    };
-    }
-
-    private boolean onSummaryAreaAction(SystemEvent event)
-    {
-	NullCheck.notNull(event, "event");
-	return false;
- }
-
-    private boolean showGroupProps()
-    {
-	final Object obj = groupsArea.selected();
-	if (obj == null || !(obj instanceof GroupWrapper))
+	NullCheck.notNull(newGroup, "newGroup");
+	if (this.group != null && this.group == newGroup)
 	    return false;
-	final GroupWrapper wrapper = (GroupWrapper)obj;
-	final FormArea area = new FormArea(new DefaultControlContext(luwrain), strings.groupPropertiesAreaName(wrapper.group.getName())) {
-		@Override public boolean onInputEvent(InputEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.isSpecial() && !event.isModified())
-			switch(event.getSpecial())
-			{
-			case ESCAPE:
-			    layout.closeTempLayout();
-			    return true;
-			}
-		    return super.onInputEvent(event);
-		}
-		@Override public boolean onSystemEvent(SystemEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.getType() != SystemEvent.Type.REGULAR)
-			return super.onSystemEvent(event);
-		    switch(event.getCode())
-		    {
-		    case OK:
-			try {
-			    final String name = getEnteredText("name");
-			    if (name.trim().isEmpty())
-			    {
-				luwrain.message(strings.groupPropertiesNameMayNotBeEmpty(), Luwrain.MessageType.ERROR);
-				return true;
-			    }
-			    wrapper.group.setName(name);
-			    if (getEnteredText("order-index").trim().isEmpty())
-			    {
-				luwrain.message(strings.groupPropertiesInvalidOrderIndex(), Luwrain.MessageType.ERROR);
-				return true;
-			    }
-			    final int orderIndex;
-			    try {
-				orderIndex = Integer.parseInt(getEnteredText("order-index"));
-			    }
-			    catch(NumberFormatException e)
-			    {
-				luwrain.message(strings.groupPropertiesInvalidOrderIndex(), Luwrain.MessageType.ERROR);
-				return true;
-			    }
-			    if (orderIndex < 0)
-			    {
-				luwrain.message(strings.groupPropertiesInvalidOrderIndex(), Luwrain.MessageType.ERROR);
-				return true;
-			    }
-			    wrapper.group.setOrderIndex(orderIndex);
-			    final List<String> urls = new LinkedList();
-			    for(String s: getMultilineEditLines())
-				if (!s.trim().isEmpty())
-				    urls.add(s.trim());
-			    wrapper.group.setUrls(urls);
-			    wrapper.group.save();
-			    groupsArea.refresh();
-			    layout.closeTempLayout();
-			    return true;
-			}
-			catch(PimException e)
-			{
-			    luwrain.crash(e);
-			    return true;
-			}
-		    case CLOSE:
-			closeApp();
-			return true;
-		    default:
-			return super.onSystemEvent(event);
-		    }
-		}
-	    };
-	final List<String> urls = wrapper.group.getUrls();
-	final String[] urlLines;
-	if (urls != null && !urls.isEmpty())
-	{
-	    final List<String> res = new ArrayList<>();
-	    for(String s: urls)
-		res.add(s);
-	    res.add("");
-	    urlLines = res.toArray(new String[res.size()]);
-	} else
-	    urlLines = new String[0];
-	area.addEdit("name", strings.groupPropertiesName(), wrapper.group.getName());
-	area.addEdit("order-index", strings.groupPropertiesOrderIndex(), "" + wrapper.group.getOrderIndex());
-	area.activateMultilineEdit(strings.groupPropertiesUrls(), urlLines, true);
-	layout.openTempArea(area);
+	this.group = newGroup;
+	loadArticles();
 	return true;
     }
 
-    @Override public void closeApp()
+
+        void loadGroups()
     {
-	luwrain.closeApp();
+	try {
+	    final List<GroupWrapper> w = new LinkedList();
+	    final NewsGroup[] g = storing.getGroups().load();
+	    Arrays.sort(g);
+	    int[] newCounts = storing.getArticles().countNewInGroups(g);
+	    int[] markedCounts = storing.getArticles().countMarkedInGroups(g);
+	    for(int i = 0;i < g.length;++i)
+	    {
+		final int newCount = i < newCounts.length?newCounts[i]:0;
+		final int markedCount = i < markedCounts.length?markedCounts[i]:0;
+		if (showAllGroups || newCount > 0 || markedCount > 0)
+		    w.add(new GroupWrapper(g[i], newCount));
+	    }
+	    this.groups.clear();
+	    this.groups.addAll(w);
+	}
+	catch(PimException e)
+	{
+	    this.groups.clear();
+	    crash(e);
+	}
     }
 
-    @Override public String getAppName()
+void loadArticles()
     {
-	return strings.appName();
+	if (group == null)
+	{
+	    this.articles.clear();
+	    return;
+	}
+	try {
+	    this.articles.clear();
+	    this.articles.addAll(Arrays.asList(storing.getArticles().loadWithoutRead(group)));
+	    if (articles.isEmpty())
+		this.articles.addAll(Arrays.asList(storing.getArticles().load(group)));
+	    if (articles != null)
+		Collections.sort(articles);
+	}
+	catch(PimException e)
+	{
+	    crash(e);
+	    this.articles.clear();
+	}
     }
+
+
 
     @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
     {
 	NullCheck.notNull(app, "app");
 	return MonoApp.Result.BRING_FOREGROUND;
     }
-
-    @Override public AreaLayout getAreaLayout()
-    {
-	return layout.getLayout();
     }
-}
