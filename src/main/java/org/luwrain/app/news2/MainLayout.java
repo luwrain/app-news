@@ -14,6 +14,8 @@ import org.luwrain.controls.ListUtils.*;
 
 import static org.luwrain.core.DefaultEventResponse.*;
 
+import org.luwrain.app.news.Strings;
+
 final class MainLayout extends LayoutBase
 {
     private final App app;

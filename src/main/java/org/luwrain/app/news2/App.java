@@ -4,12 +4,12 @@ package org.luwrain.app.news2;
 import java.util.*;
 
 import org.luwrain.core.*;
-import org.luwrain.core.events.*;
-import org.luwrain.controls.*;
-import org.luwrain.controls.reader.*;
-import org.luwrain.pim.news.*;
+//import org.luwrain.core.events.*;
 import org.luwrain.pim.*;
+import org.luwrain.pim.news.*;
 import org.luwrain.app.base.*;
+
+import org.luwrain.app.news.Strings;
 
 public final class App extends AppBase<Strings> implements MonoApp
 {
@@ -32,7 +32,7 @@ public final class App extends AppBase<Strings> implements MonoApp
 	return this.mainLayout.getAreaLayout();
     }
 
-        boolean openGroup(NewsGroup newGroup)
+    boolean openGroup(NewsGroup newGroup)
     {
 	NullCheck.notNull(newGroup, "newGroup");
 	if (this.group != null && this.group == newGroup)
@@ -42,8 +42,7 @@ public final class App extends AppBase<Strings> implements MonoApp
 	return true;
     }
 
-
-        void loadGroups()
+    void loadGroups()
     {
 	try {
 	    final List<GroupWrapper> w = new LinkedList();
@@ -68,33 +67,24 @@ public final class App extends AppBase<Strings> implements MonoApp
 	}
     }
 
-void loadArticles()
+    void loadArticles()
     {
 	if (group == null)
 	{
 	    this.articles.clear();
 	    return;
 	}
-	try {
-	    this.articles.clear();
-	    this.articles.addAll(Arrays.asList(storing.getArticles().loadWithoutRead(group)));
-	    if (articles.isEmpty())
-		this.articles.addAll(Arrays.asList(storing.getArticles().load(group)));
-	    if (articles != null)
-		Collections.sort(articles);
-	}
-	catch(PimException e)
-	{
-	    crash(e);
-	    this.articles.clear();
-	}
+	this.articles.clear();
+	this.articles.addAll(Arrays.asList(storing.getArticles().loadWithoutRead(group)));
+	if (articles.isEmpty())
+	    this.articles.addAll(Arrays.asList(storing.getArticles().load(group)));
+	if (articles != null)
+	    Collections.sort(articles);
     }
-
-
 
     @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
     {
 	NullCheck.notNull(app, "app");
 	return MonoApp.Result.BRING_FOREGROUND;
     }
-    }
+}

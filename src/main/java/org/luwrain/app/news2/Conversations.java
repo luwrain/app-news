@@ -6,6 +6,8 @@ import java.net.*;
 import org.luwrain.core.*;
 import org.luwrain.popups.*;
 
+import org.luwrain.app.news.Strings;
+
 final class Conversations
 {
     private final Luwrain luwrain;
