@@ -37,7 +37,7 @@ final class MainLayout extends LayoutBase
 		@Override public boolean onSystemEvent(SystemEvent event)
 		{
 		    NullCheck.notNull(event, "event");
-		    		    if (event.getType() == SystemEvent.Type.BROADCAST)
+		    if (event.getType() == SystemEvent.Type.BROADCAST)
 			switch(event.getCode())
 			{
 			case REFRESH:
@@ -47,22 +47,22 @@ final class MainLayout extends LayoutBase
 			default:
 			    super.onSystemEvent(event);
 			}
-		    		    if (event.getType() == SystemEvent.Type.BROADCAST)
-					switch(event.getCode())
-					{
-					    		    case PROPERTIES:
-							    //return showGroupProps();
-							    return false;
-					default:
-							    return super.onSystemEvent(event);
-					}
+		    if (event.getType() == SystemEvent.Type.BROADCAST)
+			switch(event.getCode())
+			{
+			case PROPERTIES:
+			//return showGroupProps();
+			return false;
+			default:
+			return super.onSystemEvent(event);
+			}
 		    return super.onSystemEvent(event);
 		}
 	    };
 	final Actions groupsActions = actions(
 					      action("add-group", app.getStrings().actionAddGroup(), new InputEvent(InputEvent.Special.INSERT), this::actNewGroup),
 					      action("delete-group", app.getStrings().actionDeleteGroup(), new InputEvent(InputEvent.Special.DELETE, EnumSet.of(InputEvent.Modifiers.SHIFT)), this::actDeleteGroup)
-);
+					      );
 
 	this.summaryArea = new ListArea<NewsArticle>(listParams((params)->{
 		    params.name = app.getStrings().summaryAreaName();
@@ -131,33 +131,25 @@ index < 0 || index >= articles.length)
     }
     */
 
-
-    /*
-    boolean markAsReadWholeGroup(NewsGroup group)
+    private boolean actMarkAsReadWholeGroup()
     {
-	NullCheck.notNull(group, "group");
-	try {
-	    NewsArticle articles[];
-	    articles = storing.getArticles().loadWithoutRead(group);
-	    if (articles == null || articles.length < 1)
-		return true;
-	    for(NewsArticle a: articles)
-		if (a.getState() == NewsArticle.NEW)
-		{
-		    a.setState(NewsArticle.READ);
-		    a.save();
-		}
-	    return true;
-	}
-	catch (PimException e)
-	{
-	    luwrain.crash(e);
+	final GroupWrapper wrapper = groupsArea.selected();
+	if (wrapper == null)
 	    return false;
-	}
+	final NewsGroup group = wrapper.group;
+	final NewsArticle[] articles = app.getStoring().getArticles().loadWithoutRead(group);
+	if (articles == null)
+	    return true;
+	for(NewsArticle a: articles)
+	    if (a.getState() == NewsArticle.NEW)
+	    {
+		a.setState(NewsArticle.READ);
+		a.save();
+	    }
+	return true;
     }
-    */
 
-        private boolean onGroupsClick(GroupWrapper group)
+    private boolean onGroupsClick(GroupWrapper group)
     {
 	NullCheck.notNull(group, "group");
 	if (app.openGroup(group.group))
@@ -169,7 +161,7 @@ index < 0 || index >= articles.length)
 	return true;
     }
 
-        private boolean actNewGroup()
+    private boolean actNewGroup()
     {
 	final String name = app.getConv().newGroupName();
 	if (name == null)
@@ -195,8 +187,7 @@ index < 0 || index >= articles.length)
 	return true;
     }
 
-
-        private boolean onSummarySpace()
+    private boolean onSummarySpace()
     {
 	final NewsArticle article = summaryArea.selected();
 	if (article == null)
@@ -212,7 +203,7 @@ index < 0 || index >= articles.length)
 	return true;
     }
 
-        private boolean onSummaryClick(NewsArticle article)
+    private boolean onSummaryClick(NewsArticle article)
     {
 	NullCheck.notNull(article, "article");
 	final DocumentBuilder docBuilder = new DocumentBuilderLoader().newDocumentBuilder(getLuwrain(), ContentTypes.TEXT_HTML_DEFAULT);
@@ -221,9 +212,9 @@ index < 0 || index >= articles.length)
 	markAsRead(article);
 	summaryArea.refresh();
 	groupsArea.refresh();
-	    final Properties props = new Properties();
-	    props.setProperty("url", article.getUrl());
-	    final Document doc = docBuilder.buildDoc(article.getContent(), props);
+	final Properties props = new Properties();
+	props.setProperty("url", article.getUrl());
+	final Document doc = docBuilder.buildDoc(article.getContent(), props);
 	if (doc != null)
 	{
 	    final Node root = doc.getRoot();
@@ -232,30 +223,22 @@ index < 0 || index >= articles.length)
 	    doc.commit();
 	    viewArea.setDocument(doc, getLuwrain().getAreaVisibleWidth(viewArea));
 	}
-setActiveArea(viewArea);
+	setActiveArea(viewArea);
 	return true;
     }
 
-        private boolean markAsRead(NewsArticle article)
+    private boolean markAsRead(NewsArticle article)
     {
 	NullCheck.notNull(article, "article");
-	    if (article.getState() == NewsArticle.NEW)
-	    {
-		article.setState(NewsArticle.READ);
-		article.save();
-	    }
-	    return true;
+	if (article.getState() == NewsArticle.NEW)
+	{
+	    article.setState(NewsArticle.READ);
+	    article.save();
+	}
+	return true;
     }
 
-
-    
-
-
-
-
-
-
-final class SummaryAppearance implements ListArea.Appearance<NewsArticle>
+    final class SummaryAppearance implements ListArea.Appearance<NewsArticle>
     {
 	@Override public void announceItem(NewsArticle article, Set<Flags> flags)
 	{
@@ -301,6 +284,5 @@ final class SummaryAppearance implements ListArea.Appearance<NewsArticle>
 	{
 	    return article.getTitle().length() + 2;
 	}
-		}
-
+    }
 }
