@@ -13,12 +13,11 @@ final class Conversations
     private final Luwrain luwrain;
     private final Strings strings;
 
-    Conversations(Luwrain luwrain, Strings strings)
+    Conversations(App app)
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(strings, "strings");
-	this.luwrain = luwrain;
-	this.strings = strings;
+	NullCheck.notNull(app, "app");
+	this.luwrain = app.getLuwrain();
+	this.strings = app.getStrings();
     }
 
     boolean confirmGroupDeleting(GroupWrapper wrapper)

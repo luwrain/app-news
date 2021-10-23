@@ -22,11 +22,17 @@ public final class Extension extends EmptyExtension
 {
     @Override public Command[] getCommands(Luwrain luwrain)
     {
-	return new Command[]{new SimpleShortcutCommand("news")};
+	return new Command[]{
+	    new SimpleShortcutCommand("news"),
+	    new SimpleShortcutCommand("news2")
+	};
     }
 
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
-	return new ExtensionObject[]{ new SimpleShortcut("news", App.class) };
+	return new ExtensionObject[]{
+	    new SimpleShortcut("news", App.class),
+	    new SimpleShortcut("news2", org.luwrain.app.news2.App.class)
+	};
     }
 }

@@ -6,6 +6,7 @@ import java.util.*;
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
+import org.luwrain.reader.*;
 import org.luwrain.controls.reader.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.pim.*;
@@ -28,21 +29,12 @@ final class MainLayout extends LayoutBase
 	super(app);
 	this.app = app;
 	this.groupsArea = new ListArea<GroupWrapper>(listParams((params)->{
-		    		    params.name = app.getStrings().groupsAreaName();
+		    params.name = app.getStrings().groupsAreaName();
 		    params.model = new ListModel<>(app.groups);
-	params.appearance = new DefaultAppearance<>(params.context, Suggestions.CLICKABLE_LIST_ITEM);
-				    /*
-	params.clickHandler = (area, index, group)->{
-		    if (!onGroupsClick(group))
-			return false;
-		    setActiveArea(summaryArea);
-		    return true;
-	    };
-				    */
-
-
-	    })){
-				/*
+		    params.appearance = new DefaultAppearance<>(params.context, Suggestions.CLICKABLE_LIST_ITEM);
+		    params.clickHandler = (area, index, group)->onGroupsClick(group);
+		})){
+		/*
 		    case REFRESH:
 			luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
 			return super.onSystemEvent(event);
@@ -50,21 +42,28 @@ final class MainLayout extends LayoutBase
 			return showGroupProps();
 			*/
 	    };
-			
-		this.summaryArea = new ListArea<>(listParams((params)->{
-			    //			    params.clickHandler = (area, index, obj)->actions.onSummaryClick
-			    params.model = new ListModel<>(app.articles);
-	params.appearance = new SummaryAppearance();
-				/*
-(summaryArea, groupsArea, viewArea, obj))) {
+	final Actions groupsActions = actions();
+
+	this.summaryArea = new ListArea<NewsArticle>(listParams((params)->{
+		    params.name = app.getStrings().summaryAreaName();
+		    params.model = new ListModel<>(app.articles);
+		    params.appearance = new SummaryAppearance();
+		    params.clickHandler = (area, index, article)->onSummaryClick(article);
+		})){
+		@Override public boolean onInputEvent(InputEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    if (!event.isModified() && !event.isSpecial())
 			switch (event.getChar())
 			{
 			case ' ':
-			    return actions.onSummarySpace(groupsArea, summaryArea);
-			};
+			    return onSummarySpace();
+			}
+		    return super.onInputEvent(event);
+		}
+	    };
+	final Actions summaryActions = actions();
 
-				*/
-			}));
 	final ReaderArea.Params viewParams = new ReaderArea.Params();
 	viewParams.context = getControlContext();
 	this.viewArea = new ReaderArea(viewParams){
@@ -86,6 +85,8 @@ final class MainLayout extends LayoutBase
 		    return app.getStrings().viewAreaName();
 		}
 	    };
+	final Actions viewActions = actions();
+	setAreaLayout(AreaLayout.LEFT_TOP_BOTTOM, groupsArea, groupsActions, summaryArea, summaryActions, viewArea, viewActions);
     }
 
     /*
@@ -110,23 +111,6 @@ index < 0 || index >= articles.length)
     }
     */
 
-        boolean markAsRead(NewsArticle article)
-    {
-	NullCheck.notNull(article, "article");
-	try {
-	    if (article.getState() == NewsArticle.NEW)
-	    {
-		article.setState(NewsArticle.READ);
-		article.save();
-	    }
-	    return true;
-	}
-	catch (Exception e)
-	{
-	    app.crash(e);
-	    return false;
-	}
-    }
 
     /*
     boolean markAsReadWholeGroup(NewsGroup group)
@@ -156,15 +140,95 @@ index < 0 || index >= articles.length)
         private boolean onGroupsClick(GroupWrapper group)
     {
 	NullCheck.notNull(group, "group");
-	/*
-	if (base.openGroup(group.group))
+	if (app.openGroup(group.group))
 	{
-	    summaryArea.redraw(); 
-	    summaryArea.resetHotPoint();
+	    summaryArea.reset(false);
+	    summaryArea.refresh();
+		    setActiveArea(summaryArea);
 	}
-	*/
 	return true;
     }
+
+        private boolean actNewGroup()
+    {
+	final String name = app.getConv().newGroupName();
+	if (name == null)
+	    return false;
+	final NewsGroup group = new NewsGroup();
+	group.setName(name);
+	app.getStoring().getGroups().save(group);
+	app.loadGroups();
+	groupsArea.refresh();
+	return true;
+    }
+
+    private boolean actDeleteGroup()
+    {
+	final GroupWrapper wrapper = groupsArea.selected();
+	if (wrapper == null)
+	    return false;
+	if (!app.getConv().confirmGroupDeleting(wrapper))
+	    return true;
+	app.getStoring().getGroups().delete(wrapper.group);
+	app.loadGroups();
+	groupsArea.refresh();
+	return true;
+    }
+
+
+        private boolean onSummarySpace()
+    {
+	final NewsArticle article = summaryArea.selected();
+	if (article == null)
+	    return false;
+	if (!markAsRead(article))
+	    return false;
+	summaryArea.refresh();
+	groupsArea.refresh();
+	final int index = summaryArea.selectedIndex();
+	if (index + 1 >= summaryArea.getListModel().getItemCount())
+	    setActiveArea(groupsArea); else
+	    summaryArea.select(index + 1, true);
+	return true;
+    }
+
+        private boolean onSummaryClick(NewsArticle article)
+    {
+	NullCheck.notNull(article, "article");
+	final DocumentBuilder docBuilder = new DocumentBuilderLoader().newDocumentBuilder(getLuwrain(), ContentTypes.TEXT_HTML_DEFAULT);
+	if (docBuilder == null)
+	    return false;
+	markAsRead(article);
+	summaryArea.refresh();
+	groupsArea.refresh();
+	    final Properties props = new Properties();
+	    props.setProperty("url", article.getUrl());
+	    final Document doc = docBuilder.buildDoc(article.getContent(), props);
+	if (doc != null)
+	{
+	    final Node root = doc.getRoot();
+	    root.addSubnode(NodeBuilder.newParagraph(app.getStrings().articleUrl(article.getUrl())));
+	    root.addSubnode(NodeBuilder.newParagraph(app.getStrings().articleTitle(article.getTitle())));
+	    doc.commit();
+	    viewArea.setDocument(doc, getLuwrain().getAreaVisibleWidth(viewArea));
+	}
+setActiveArea(viewArea);
+	return true;
+    }
+
+        private boolean markAsRead(NewsArticle article)
+    {
+	NullCheck.notNull(article, "article");
+	    if (article.getState() == NewsArticle.NEW)
+	    {
+		article.setState(NewsArticle.READ);
+		article.save();
+	    }
+	    return true;
+    }
+
+
+    
 
 
 
