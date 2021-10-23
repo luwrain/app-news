@@ -34,15 +34,35 @@ final class MainLayout extends LayoutBase
 		    params.appearance = new DefaultAppearance<>(params.context, Suggestions.CLICKABLE_LIST_ITEM);
 		    params.clickHandler = (area, index, group)->onGroupsClick(group);
 		})){
-		/*
-		    case REFRESH:
-			luwrain.runWorker(org.luwrain.pim.workers.News.NAME);
-			return super.onSystemEvent(event);
-		    case PROPERTIES:
-			return showGroupProps();
-			*/
+		@Override public boolean onSystemEvent(SystemEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    		    if (event.getType() == SystemEvent.Type.BROADCAST)
+			switch(event.getCode())
+			{
+			case REFRESH:
+			    if (event.getBroadcastFilterUniRef().startsWith("newsgroup:"))
+				refresh();
+			    return true;
+			default:
+			    super.onSystemEvent(event);
+			}
+		    		    if (event.getType() == SystemEvent.Type.BROADCAST)
+					switch(event.getCode())
+					{
+					    		    case PROPERTIES:
+							    //return showGroupProps();
+							    return false;
+					default:
+							    return super.onSystemEvent(event);
+					}
+		    return super.onSystemEvent(event);
+		}
 	    };
-	final Actions groupsActions = actions();
+	final Actions groupsActions = actions(
+					      action("add-group", app.getStrings().actionAddGroup(), new InputEvent(InputEvent.Special.INSERT), this::actNewGroup),
+					      action("delete-group", app.getStrings().actionDeleteGroup(), new InputEvent(InputEvent.Special.DELETE, EnumSet.of(InputEvent.Modifiers.SHIFT)), this::actDeleteGroup)
+);
 
 	this.summaryArea = new ListArea<NewsArticle>(listParams((params)->{
 		    params.name = app.getStrings().summaryAreaName();
@@ -144,8 +164,8 @@ index < 0 || index >= articles.length)
 	{
 	    summaryArea.reset(false);
 	    summaryArea.refresh();
-		    setActiveArea(summaryArea);
 	}
+	setActiveArea(summaryArea);
 	return true;
     }
 

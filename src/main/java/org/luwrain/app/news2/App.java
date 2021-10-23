@@ -4,7 +4,7 @@ package org.luwrain.app.news2;
 import java.util.*;
 
 import org.luwrain.core.*;
-//import org.luwrain.core.events.*;
+import org.luwrain.core.events.*;
 import org.luwrain.pim.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.app.base.*;
@@ -33,6 +33,7 @@ public final class App extends AppBase<Strings> implements MonoApp
 	this.mainLayout = new MainLayout(this );
 	setAppName(getStrings().appName());
 	loadGroups();
+	runFetching();
 	return this.mainLayout.getAreaLayout();
     }
 
@@ -85,9 +86,30 @@ public final class App extends AppBase<Strings> implements MonoApp
 	return true;
     }
 
+    @Override public boolean onSystemEvent(Area area, SystemEvent event)
+    {
+	NullCheck.notNull(area, "area");
+	NullCheck.notNull(event, "event");
+	if (event.getType() != SystemEvent.Type.REGULAR)
+	    return super.onSystemEvent(area, event);
+	switch(event.getCode())
+	{
+	case REFRESH:
+	    runFetching();
+	    return true;
+	}
+	return super.onSystemEvent(area, event);
+    }
+
+    void runFetching()
+    {
+	getLuwrain().runWorker(org.luwrain.pim.workers.News.NAME);
+    }
+
     @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
     {
 	NullCheck.notNull(app, "app");
+	runFetching();
 	return MonoApp.Result.BRING_FOREGROUND;
     }
 
