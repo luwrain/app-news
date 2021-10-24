@@ -39,7 +39,7 @@ public interface Strings
     String groupAddingPopupPrefix();
     String groupDeletingPopupName();
     String groupDeletingPopupText(String groupName);
-    String groupPropertiesAreaName(String groupArea);
+    String groupPropertiesAreaName(String groupName);
     String groupPropertiesInvalidOrderIndex();
     String groupPropertiesName();
     String groupPropertiesNameMayNotBeEmpty();

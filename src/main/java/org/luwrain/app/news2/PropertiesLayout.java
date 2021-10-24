@@ -17,12 +17,12 @@ final class PropertiesLayout extends LayoutBase
     private final App app;
     final FormArea formArea;
 
-    PropertiesLayout(App app, NewsGroup group)
+    PropertiesLayout(App app, NewsGroup group, ActionHandler closing)
     {
 	super(app);
 	NullCheck.notNull(group, "group");
 	this.app = app;
-	this.formArea = new FormArea(getControlContext()) ;
+	this.formArea = new FormArea(getControlContext(), app.getStrings().groupPropertiesAreaName(group.getName())) ;
 	final List<String> urls = group.getUrls();
 	final String[] urlLines;
 	if (urls != null && !urls.isEmpty())
@@ -37,6 +37,12 @@ final class PropertiesLayout extends LayoutBase
 	formArea.addEdit(NAME, app.getStrings().groupPropertiesName(), group.getName());
 	formArea.addEdit(ORDER_INDEX, app.getStrings().groupPropertiesOrderIndex(), "" + group.getOrderIndex());
 	formArea.activateMultilineEdit(app.getStrings().groupPropertiesUrls(), urlLines, true);
+	setCloseHandler(closing);
+	setOkHandler(()->{
+		if (!save(group))
+		    return true;
+		return closing.onAction();
+	    });
 	setAreaLayout(formArea, actions());
     }
 

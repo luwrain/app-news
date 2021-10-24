@@ -49,12 +49,11 @@ final class MainLayout extends LayoutBase
 			default:
 			    super.onSystemEvent(event);
 			}
-		    if (event.getType() == SystemEvent.Type.BROADCAST)
+		    if (event.getType() == SystemEvent.Type.REGULAR)
 			switch(event.getCode())
 			{
 			case PROPERTIES:
-			//return showGroupProps();
-			return false;
+			return editGroupProps();
 			default:
 			return super.onSystemEvent(event);
 			}
@@ -71,6 +70,7 @@ final class MainLayout extends LayoutBase
 		    params.model = new ListModel<>(app.articles);
 		    params.appearance = new SummaryAppearance();
 		    params.clickHandler = (area, index, article)->onSummaryClick(article);
+		    params.flags.add(ListArea.Flags.AREA_ANNOUNCE_SELECTED);
 		})){
 		@Override public boolean onInputEvent(InputEvent event)
 		{
@@ -82,6 +82,19 @@ final class MainLayout extends LayoutBase
 			    return onSummarySpace();
 			}
 		    return super.onInputEvent(event);
+		}
+		@Override public boolean onSystemEvent(SystemEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    if (event.getType() != SystemEvent.Type.REGULAR)
+			return super.onSystemEvent(event);
+		    switch(event.getCode())
+		    {
+		    case OK:
+			return openArticleUrl();
+		    default:
+			return super.onSystemEvent(event);
+		    }
 		}
 	    };
 	final Actions summaryActions = actions();
@@ -186,6 +199,34 @@ index < 0 || index >= articles.length)
 	app.getStoring().getGroups().delete(wrapper.group);
 	app.loadGroups();
 	groupsArea.refresh();
+	return true;
+    }
+
+    private boolean openArticleUrl()
+    {
+	final NewsArticle article = summaryArea.selected();
+	if (article == null)
+	    return false;
+	final String url = article.getUrl();
+	if (url == null || url.trim().isEmpty())
+	    return false;
+	app.getLuwrain().launchApp("reader", new String[]{url.trim()});
+		return true;
+    }
+
+    private boolean editGroupProps()
+    {
+	final GroupWrapper wrapper = groupsArea.selected();
+	if (wrapper == null)
+	    return false;
+	final PropertiesLayout propLayout = new PropertiesLayout(app, wrapper.group, ()->{
+		app.setAreaLayout(MainLayout.this);
+		app.getLuwrain().announceActiveArea();
+		groupsArea.refresh();
+		return true;
+	    });
+	app.setAreaLayout(propLayout);
+	app.getLuwrain().announceActiveArea();
 	return true;
     }
 
