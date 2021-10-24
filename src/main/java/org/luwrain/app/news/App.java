@@ -1,5 +1,20 @@
+/*
+   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
 
-package org.luwrain.app.news2;
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
+
+package org.luwrain.app.news;
 
 import java.util.*;
 
@@ -8,8 +23,6 @@ import org.luwrain.core.events.*;
 import org.luwrain.pim.*;
 import org.luwrain.pim.news.*;
 import org.luwrain.app.base.*;
-
-import org.luwrain.app.news.Strings;
 
 public final class App extends AppBase<Strings> implements MonoApp
 {
@@ -49,7 +62,7 @@ public final class App extends AppBase<Strings> implements MonoApp
 
     void loadGroups()
     {
-	final List<GroupWrapper> w = new LinkedList();
+	final List<GroupWrapper> w = new ArrayList<>();
 	final NewsGroup[] g = storing.getGroups().load();
 	Arrays.sort(g);
 	int[] newCounts = storing.getArticles().countNewInGroups(g);

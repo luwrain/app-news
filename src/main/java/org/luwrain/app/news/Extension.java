@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -24,7 +24,6 @@ public final class Extension extends EmptyExtension
     {
 	return new Command[]{
 	    new SimpleShortcutCommand("news"),
-	    new SimpleShortcutCommand("news2")
 	};
     }
 
@@ -32,7 +31,6 @@ public final class Extension extends EmptyExtension
     {
 	return new ExtensionObject[]{
 	    new SimpleShortcut("news", App.class),
-	    new SimpleShortcut("news2", org.luwrain.app.news2.App.class)
 	};
     }
 }

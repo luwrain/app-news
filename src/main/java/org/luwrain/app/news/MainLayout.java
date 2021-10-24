@@ -1,5 +1,20 @@
+/*
+   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
 
-package org.luwrain.app.news2;
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
+
+package org.luwrain.app.news;
 
 import java.util.*;
 
@@ -14,8 +29,6 @@ import org.luwrain.app.base.*;
 import org.luwrain.controls.ListUtils.*;
 
 import static org.luwrain.core.DefaultEventResponse.*;
-
-import org.luwrain.app.news.Strings;
 
 final class MainLayout extends LayoutBase
 {
@@ -280,6 +293,45 @@ index < 0 || index >= articles.length)
 	}
 	return true;
     }
+
+    /*
+    boolean setShowAllGroupsMode(ListArea groupsArea, boolean value)
+    {
+	NullCheck.notNull(groupsArea, "groupsArea");
+	base.setShowAllGroups(value);
+	groupsArea.refresh();
+	luwrain.playSound(Sounds.OK);
+	return true;
+    }
+
+
+    boolean markAsReadWholeGroup(ListArea groupsArea, ListArea summaryArea, GroupWrapper group)
+    {
+	NullCheck.notNull(groupsArea, "groupsArea");
+	NullCheck.notNull(summaryArea, "summaryArea");
+	NullCheck.notNull(group, "group");
+	if (base.markAsReadWholeGroup(group.group))
+	{
+	    groupsArea.refresh();
+	    groupsArea.announceSelected();
+	}
+	base.closeGroup();
+	summaryArea.refresh();
+	return true;
+    }
+
+    boolean onOpenUrl(ReaderArea area)
+    {
+	NullCheck.notNull(area, "area");
+	final Document doc = area.getDocument();
+	if (doc == null || doc.getUrl() == null)
+	    return false;
+	luwrain.launchApp("reader", new String[]{doc.getUrl().toString()});
+	return true;
+    }
+}
+
+    */
 
     final class SummaryAppearance implements ListArea.Appearance<NewsArticle>
     {
