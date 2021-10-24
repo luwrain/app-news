@@ -30,7 +30,9 @@ final class MainLayout extends LayoutBase
 	this.app = app;
 	this.groupsArea = new ListArea<GroupWrapper>(listParams((params)->{
 		    params.name = app.getStrings().groupsAreaName();
-		    params.model = new ListModel<>(app.groups);
+		    params.model = new ListModel<GroupWrapper>(app.groups){
+			    @Override public void refresh() { app.loadGroups(); }
+			};
 		    params.appearance = new DefaultAppearance<>(params.context, Suggestions.CLICKABLE_LIST_ITEM);
 		    params.clickHandler = (area, index, group)->onGroupsClick(group);
 		})){
