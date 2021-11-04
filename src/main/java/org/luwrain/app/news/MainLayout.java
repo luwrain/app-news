@@ -180,11 +180,9 @@ index < 0 || index >= articles.length)
     private boolean onGroupsClick(GroupWrapper group)
     {
 	NullCheck.notNull(group, "group");
-	if (app.openGroup(group.group))
-	{
-	    summaryArea.reset(false);
-	    summaryArea.refresh();
-	}
+	app.openGroup(group.group);
+	summaryArea.reset(false);
+	summaryArea.refresh();
 	setActiveArea(summaryArea);
 	return true;
     }
@@ -197,8 +195,15 @@ index < 0 || index >= articles.length)
 	final NewsGroup group = new NewsGroup();
 	group.setName(name);
 	app.getStoring().getGroups().save(group);
+	app.showAllGroups = true;
 	app.loadGroups();
 	groupsArea.refresh();
+	for(GroupWrapper g: app.groups)
+	    if (g.group.getName().equals(name))
+	    {
+		groupsArea.select(g, true);
+		break;
+	    }
 	return true;
     }
 
@@ -220,6 +225,7 @@ index < 0 || index >= articles.length)
 	final NewsArticle article = summaryArea.selected();
 	if (article == null)
 	    return false;
+	markAsRead(article);
 	final String url = article.getUrl();
 	if (url == null || url.trim().isEmpty())
 	    return false;
@@ -273,11 +279,8 @@ index < 0 || index >= articles.length)
 	final Document doc = docBuilder.buildDoc(article.getContent(), props);
 	if (doc != null)
 	{
-	    final Node root = doc.getRoot();
-	    root.addSubnode(NodeBuilder.newParagraph(app.getStrings().articleUrl(article.getUrl())));
-	    root.addSubnode(NodeBuilder.newParagraph(app.getStrings().articleTitle(article.getTitle())));
 	    doc.commit();
-	    viewArea.setDocument(doc, getLuwrain().getAreaVisibleWidth(viewArea));
+	    viewArea.setDocument(doc, getAreaVisibleWidth(viewArea));
 	}
 	setActiveArea(viewArea);
 	return true;

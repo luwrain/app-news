@@ -30,7 +30,7 @@ public final class App extends AppBase<Strings> implements MonoApp
     private MainLayout mainLayout = null;
     private Conversations conv = null;
     private NewsGroup group = null;
-    private boolean showAllGroups = false;
+    boolean showAllGroups = false;
 
     final List<GroupWrapper> groups = new ArrayList<>();
     final List<NewsArticle> articles = new ArrayList<>();
