@@ -53,8 +53,6 @@ public final class App extends AppBase<Strings> implements MonoApp
     boolean openGroup(NewsGroup newGroup)
     {
 	NullCheck.notNull(newGroup, "newGroup");
-	if (this.group != null && this.group == newGroup)
-	    return false;
 	this.group = newGroup;
 	loadArticles();
 	return true;
