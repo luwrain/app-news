@@ -92,7 +92,7 @@ final class PropertiesLayout extends LayoutBase
 	}
 	group.setOrderIndex(orderIndex);
 	final List<String> urls = new ArrayList<>();
-	for(String s: formArea.getMultilineEditLines())
+	for(String s: formArea.getMultilineEditText())
 	    if (!s.trim().isEmpty())
 		urls.add(s.trim());
 	group.setUrls(urls);
