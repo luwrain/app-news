@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2022 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -32,7 +32,7 @@ import static org.luwrain.core.DefaultEventResponse.*;
 
 final class MainLayout extends LayoutBase
 {
-    private final App app;
+    final App app;
     final ListArea<GroupWrapper> groupsArea;
     final ListArea<NewsArticle> summaryArea;
     final ReaderArea viewArea;
@@ -51,33 +51,31 @@ final class MainLayout extends LayoutBase
 		})){
 		@Override public boolean onSystemEvent(SystemEvent event)
 		{
-		    NullCheck.notNull(event, "event");
 		    if (event.getType() == SystemEvent.Type.BROADCAST)
 			switch(event.getCode())
 			{
 			case REFRESH:
-			    if (event.getBroadcastFilterUniRef().startsWith("newsgroup:"))
-				refresh();
-			    return true;
+			if (event.getBroadcastFilterUniRef().startsWith("newsgroup:"))
+			    refresh();
+			return true;
 			default:
-			    super.onSystemEvent(event);
+			super.onSystemEvent(event);
 			}
 		    if (event.getType() == SystemEvent.Type.REGULAR)
 			switch(event.getCode())
 			{
 			case PROPERTIES:
 			return editGroupProps();
-			default:
-			return super.onSystemEvent(event);
 			}
 		    return super.onSystemEvent(event);
 		}
 	    };
 	final Actions groupsActions = actions(
-					      action("add-group", app.getStrings().actionAddGroup(), new InputEvent(InputEvent.Special.INSERT), this::actNewGroup),
-					      action("delete-group", app.getStrings().actionDeleteGroup(), new InputEvent(InputEvent.Special.DELETE, EnumSet.of(InputEvent.Modifiers.SHIFT)), this::actDeleteGroup)
+					      action("show-read", app.getStrings().actionShowWithReadOnly(), new InputEvent('='), ()->setShowAllGroupsMode(true)),
+					      action("hide-read", app.getStrings().actionHideWithReadOnly(), new InputEvent('-'),()->setShowAllGroupsMode(false)),
+					      action("delete-group", app.getStrings().actionDeleteGroup(), new InputEvent(InputEvent.Special.DELETE, EnumSet.of(InputEvent.Modifiers.SHIFT)), this::actDeleteGroup),
+					      action("add-group", app.getStrings().actionAddGroup(), new InputEvent(InputEvent.Special.INSERT), this::actNewGroup)
 					      );
-
 	this.summaryArea = new ListArea<NewsArticle>(listParams((params)->{
 		    params.name = app.getStrings().summaryAreaName();
 		    params.model = new ListModel<>(app.articles);
@@ -87,46 +85,38 @@ final class MainLayout extends LayoutBase
 		})){
 		@Override public boolean onInputEvent(InputEvent event)
 		{
-		    NullCheck.notNull(event, "event");
 		    if (!event.isModified() && !event.isSpecial())
 			switch (event.getChar())
 			{
 			case ' ':
-			    return onSummarySpace();
+			return onSummarySpace();
 			}
 		    return super.onInputEvent(event);
 		}
 		@Override public boolean onSystemEvent(SystemEvent event)
 		{
-		    NullCheck.notNull(event, "event");
-		    if (event.getType() != SystemEvent.Type.REGULAR)
-			return super.onSystemEvent(event);
-		    switch(event.getCode())
-		    {
-		    case OK:
+		    if (event.getType() == SystemEvent.Type.REGULAR)
+			switch(event.getCode())
+			{
+			case OK:
 			return openArticleUrl();
-		    default:
-			return super.onSystemEvent(event);
-		    }
+			}
+		    return super.onSystemEvent(event);
 		}
 	    };
 	final Actions summaryActions = actions();
-
 	final ReaderArea.Params viewParams = new ReaderArea.Params();
 	viewParams.context = getControlContext();
 	this.viewArea = new ReaderArea(viewParams){
 		@Override public boolean onSystemEvent(SystemEvent event)
 		{
-		    NullCheck.notNull(event, "event");
-		    if (event.getType() != SystemEvent.Type.REGULAR)
-			return super.onSystemEvent(event);
-		    switch(event.getCode())
-		    {
-		    case OK:
-			return false;//actions.onOpenUrl(this);
-		    default:
-			return super.onSystemEvent(event);
-		    }
+		    if (event.getType() == SystemEvent.Type.REGULAR)
+			switch(event.getCode())
+			{
+			case OK:
+			    return false;//actions.onOpenUrl(this);
+			}
+		    return super.onSystemEvent(event);
 		}
 		@Override public String getAreaName()
 		{
@@ -297,17 +287,15 @@ index < 0 || index >= articles.length)
 	return true;
     }
 
-    /*
-    boolean setShowAllGroupsMode(ListArea groupsArea, boolean value)
+    boolean setShowAllGroupsMode(boolean value)
     {
-	NullCheck.notNull(groupsArea, "groupsArea");
-	base.setShowAllGroups(value);
+	app.showAllGroups = value;
 	groupsArea.refresh();
-	luwrain.playSound(Sounds.OK);
+	app.getLuwrain().playSound(Sounds.OK);
 	return true;
     }
 
-
+    /*
     boolean markAsReadWholeGroup(ListArea groupsArea, ListArea summaryArea, GroupWrapper group)
     {
 	NullCheck.notNull(groupsArea, "groupsArea");
@@ -333,7 +321,6 @@ index < 0 || index >= articles.length)
 	return true;
     }
 }
-
     */
 
     final class SummaryAppearance implements ListArea.Appearance<NewsArticle>

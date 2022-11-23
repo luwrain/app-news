@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2021 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2022 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -22,16 +22,22 @@ public interface Strings
 {
     static final String NAME = "luwrain.news";
 
+        String appName();
+    
+        String groupsAreaName();
     String actionAddGroup();
     String actionDeleteGroup();
-    String actionFetch();
+    //    String actionFetch();
     String actionHideWithReadOnly();
+        String actionShowWithReadOnly();
+    
+    
     String actionMarkAllAsRead();
     String actionMarkArticle();
     String actionReadArticle();
-    String actionShowWithReadOnly();
+
     String actionUnmarkArticle();
-    String appName();
+
     String articleTitle(String title);
     String articleUrl(String url);
     String groupAddingNameMayNotBeEmpty();
@@ -45,7 +51,7 @@ public interface Strings
     String groupPropertiesNameMayNotBeEmpty();
     String groupPropertiesOrderIndex();
     String groupPropertiesUrls();
-    String groupsAreaName();
+
     String markedPrefix();
     String readPrefix();
     String summaryAreaName();
