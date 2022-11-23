@@ -28,7 +28,7 @@ public final class App extends AppBase<Strings> implements MonoApp
 {
     private NewsStoring storing = null;
     private MainLayout mainLayout = null;
-    private Conversations conv = null;
+    private Conv conv = null;
     private NewsGroup group = null;
     boolean showAllGroups = false;
 
@@ -42,7 +42,7 @@ public final class App extends AppBase<Strings> implements MonoApp
 	this.storing = org.luwrain.pim.Connections.getNewsStoring(getLuwrain(), true);
 	if (storing == null)
 	    return null;
-	this.conv = new Conversations(this);
+	this.conv = new Conv(this);
 	this.mainLayout = new MainLayout(this );
 	setAppName(getStrings().appName());
 	loadGroups();
@@ -124,6 +124,6 @@ public final class App extends AppBase<Strings> implements MonoApp
 	return MonoApp.Result.BRING_FOREGROUND;
     }
 
-    Conversations getConv() { return this.conv; }
+    Conv getConv() { return this.conv; }
     NewsStoring getStoring() { return this.storing; }
 }

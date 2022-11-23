@@ -21,21 +21,19 @@ import java.net.*;
 import org.luwrain.core.*;
 import org.luwrain.popups.*;
 
-final class Conversations
+final class Conv
 {
     private final Luwrain luwrain;
     private final Strings strings;
 
-    Conversations(App app)
+    Conv(App app)
     {
-	NullCheck.notNull(app, "app");
 	this.luwrain = app.getLuwrain();
 	this.strings = app.getStrings();
     }
 
     boolean confirmGroupDeleting(GroupWrapper wrapper)
     {
-	NullCheck.notNull(wrapper, "wrapper");
 	return Popups.confirmDefaultNo(luwrain, strings.groupDeletingPopupName(), strings.groupDeletingPopupText(wrapper.group.getName()));
     }
 
