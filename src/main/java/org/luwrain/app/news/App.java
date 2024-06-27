@@ -39,12 +39,12 @@ public final class App extends AppBase<Strings> implements MonoApp
 
     public App() { super(Strings.NAME, Strings.class, "luwrain.news"); }
 
-    @Override public AreaLayout onAppInit()
+    @Override public AreaLayout onAppInit() throws Exception
     {
 	this.storing = org.luwrain.pim.Connections.getNewsStoring(getLuwrain(), true);
 	if (storing == null)
-	    return null;
-	this.conv = new Conv(this);
+	    throw new Exception("No news storing");
+		this.conv = new Conv(this);
 	this.mainLayout = new MainLayout(this );
 	setAppName(getStrings().appName());
 	loadGroups();
