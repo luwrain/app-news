@@ -1,3 +1,6 @@
+gradle
+gradlew*
+.gradle
 build.xml
 build
 jar
